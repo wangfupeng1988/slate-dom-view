@@ -114,3 +114,10 @@ dist
 .yarn/unplugged
 .yarn/build-state.yml
 .pnp.*
+
+.DS_Store
+
+dist/
+node_modules/
+package-lock.json
+ISSUE.md
