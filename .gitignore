@@ -121,3 +121,5 @@ dist/
 node_modules/
 package-lock.json
 ISSUE.md
+
+bak/

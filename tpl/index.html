@@ -6,9 +6,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>slate view</title>
     <style>
+        #editor-view-container {
+            border:  1px solid #ccc;
+            width: 400px;
+            height: 300px;
+        }
+        #editor-view-container div[contenteditable] {
+            outline: 0;
+            padding: 0 10px;
+            height: 100%;
+        }
+
+        .toolbar {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <p>slate view</p>
+    <div id="editor-view-container">
+    </div>
+    <div class="toolbar">
+        <button id="btn-set-content">set content</button>
+        <button id="btn-set-selection">set selection</button>
+        <button id="btn-insert-text">insert text</button>
+        <button id="btn-insert-break">insert break</button>
+    </div>
+
+    <script>
+        window.content1 = [
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        text: "hello world ~~~",
+                    }
+                ]
+            },
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        text: "this is ",
+                    },
+                    {
+                        text: "bold",
+                        bold: true
+                    },
+                    {
+                        text: " text.",
+                    }
+                ]
+            },
+        ];
+        window.content2 = [
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        text: "hello world",
+                    }
+                ]
+            },
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        text:
+                        "Since it's rich text, you can do things like turn a selection of text ",
+                    },
+                    // @ts-ignore
+                    { text: 'bold', bold: true },
+                    {
+                        text:
+                        ', or add a semantically rendered block quote in the middle of the page, like this:',
+                    },
+                ],
+            }
+        ];
+    </script>
 </body>
 </html>
