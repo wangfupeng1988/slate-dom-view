@@ -3,14 +3,19 @@
  * @author wangfupeng
  */
 
-import $ from './utils/dom'
 import { Transforms } from 'slate'
-import { createWe } from './we/index'
+import { createWe } from './editor/index'
 import { createTextArea } from './text-area/index'
+import $ from './utils/dom'
+import { TEXTAREA_TO_EDITOR, EDITOR_TO_TEXTAREA } from './utils/weak-map'
 
+// 创建实例
 const we = createWe()
 const textArea = createTextArea('editor-view-container')
 
+// 建立关联关系，以便相互访问
+TEXTAREA_TO_EDITOR.set(textArea, we)
+EDITOR_TO_TEXTAREA.set(we, textArea)
 
 
 // ----------------------------- 分割线 -----------------------------

@@ -3,13 +3,13 @@
  * @author wangfupeng
  */
 
-import { Element as SlateElement } from 'slate'
 import { h, VNode } from 'snabbdom'
-import emitter from '../we/emitter'
 import $, { Dom7Array } from '../utils/dom'
 import { genRandomStr } from '../utils/util'
 import { node2Vnode } from '../formats/index'
 import { genPatchFn } from '../utils/vdom'
+import { TEXTAREA_TO_EDITOR } from '../utils/weak-map'
+import { IWeEditor } from '../editor/index'
 
 class TextArea {
     $textAreaContainer: Dom7Array
@@ -27,12 +27,13 @@ class TextArea {
         this.$textAreaContainer = $textAreaContainer
         this.$textArea = $textArea
 
-        // 监听 editor change
-        emitter.on('editor:change', editor => {
-            this.updateView(editor.children)
-        })
-
+        // 初始化 vdom patch 函数 
         this.patchFn = genPatchFn()
+    }
+
+    private getEditorInstance(): IWeEditor | null {
+        const editor = TEXTAREA_TO_EDITOR.get(this)
+        return editor || null
     }
 
     private genTextAreaVnode(): VNode {
@@ -41,8 +42,12 @@ class TextArea {
         })
     }
 
-    private updateView(content: SlateElement[]) {
-        console.log('updateView', content)
+    public updateView() {
+        // 获取 editor
+        const editor = this.getEditorInstance()
+        const content = editor!.children
+
+        // console.log('updateView', content)
 
         // 生成 vnode
         const textAreaVnode = this.genTextAreaVnode()
