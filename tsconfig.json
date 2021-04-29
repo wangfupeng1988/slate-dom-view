@@ -13,7 +13,8 @@
       "moduleResolution": "node",
       "forceConsistentCasingInFileNames": true,
       "jsx": "react",
-      "jsxFactory": "jsx"
+      "jsxFactory": "jsx",
+      "downlevelIteration": true
     },
     "include": [
       "src/**/*"
