@@ -5,32 +5,24 @@
 
 import { Transforms } from 'slate'
 import { throttle, toArray } from 'lodash-es'
-import { h, VNode } from 'snabbdom'
 import $, { Dom7Array } from '../utils/dom'
-import { genRandomStr } from '../utils/util'
-import { node2Vnode } from '../formats/index'
-import { genPatchFn } from '../utils/vdom'
 import { TEXTAREA_TO_EDITOR } from '../utils/weak-maps'
 import { IDomEditor } from '../editor/dom-editor'
+import patchView from './patchView'
+
+let ID = 1
 
 class TextArea {
+    id: number
     $textAreaContainer: Dom7Array
-    textAreaId: string = genRandomStr('text-area')
-    $textArea: Dom7Array
-    private patchFn: Function
-    private isFirstPatchView: boolean = true
-    private curVnode: VNode | null = null
 
     constructor(textAreaContainerId: string) {
+        // id 不能重复
+        this.id = ID++
+
         // 初始化 dom
         const $textAreaContainer  = $(`#${textAreaContainerId}`)
-        const $textArea = $(`<div id="${this.textAreaId}" contenteditable="true" data-slate-editor></div>`)
-        $textAreaContainer.append($textArea)
         this.$textAreaContainer = $textAreaContainer
-        this.$textArea = $textArea
-
-        // 初始化 vdom patch 函数 
-        this.patchFn = genPatchFn()
 
         // 监听 selection change
         this.observeSelectionChange()
@@ -42,37 +34,21 @@ class TextArea {
     }
 
     /**
-     * 初始化 textArea vnode 【注意】需要用到和 DOM 一样的 id 和 attr
-     * @returns vnode
+     * editor.onchange 时触发
      */
-    private genTextAreaVnode(): VNode {
-        return h(`div#${this.textAreaId}`, {
-            props: { contenteditable: true },
-            datasets: { slateEditor: true }
-        })
+    onEditorChange() {
+        this.updateView()
     }
 
-    public updateView() {
+    /**
+     * 更新视图
+     */
+    private updateView() {
         // 获取 editor
         const editor = this.getEditorInstance()
-        const content = editor!.children
+        if (editor == null) return
 
-        // console.log('updateView', content)
-
-        // 生成 vnode
-        const textAreaVnode = this.genTextAreaVnode()
-        textAreaVnode.children = content.map(node => node2Vnode(node))
-
-        // patchView
-        if (this.isFirstPatchView) {
-            this.patchFn(this.$textArea[0], textAreaVnode)
-            this.isFirstPatchView = false
-        } else {
-            this.patchFn(this.curVnode, textAreaVnode)
-        }
-
-        // 存储最新的 vnode
-        this.curVnode = textAreaVnode
+        patchView(this, editor)
     }
 
     private observeSelectionChange() {

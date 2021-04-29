@@ -5,7 +5,7 @@
 
 import { Editor, Node, Path, Operation, Transforms, Range } from 'slate'
 import { IDomEditor, DomEditor } from './dom-editor'
-import { EDITOR_TO_TEXTAREA, EDITOR_TO_ON_CHANGE, NODE_TO_KEY } from '../utils/weak-maps'
+import { EDITOR_TO_ON_CHANGE, NODE_TO_KEY } from '../utils/weak-maps'
 import { Key } from '../utils/key'
 import { isDOMText, getPlainText } from '../utils/dom'
 
@@ -183,9 +183,6 @@ export const withDOM = <T extends Editor>(editor: T) => {
 
     // 重写 onchange API
     e.onChange = () => {
-        // 触发 textarea DOM 更新
-        triggerViewUpdate(e)
-
         // 触发配置的 onchange 事件
         const onContextChange = EDITOR_TO_ON_CHANGE.get(e)
         if (onContextChange) {
@@ -197,13 +194,4 @@ export const withDOM = <T extends Editor>(editor: T) => {
 
     // 最后要返回 editor 实例 - 重要！！！
     return e
-}
-
-/**
- * 触发 textarea 视图更新
- * @param e editor
- */
-function triggerViewUpdate(e: IDomEditor) {
-    const textArea = EDITOR_TO_TEXTAREA.get(e)
-    textArea!.updateView()
 }

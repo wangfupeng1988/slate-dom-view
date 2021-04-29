@@ -3,14 +3,20 @@
  * @author wangfupeng
  */
 
+import { VNode } from 'snabbdom'
 import { Node, Ancestor, Editor, Range } from 'slate'
 import { IDomEditor } from '../editor/dom-editor'
 import TextArea from '../text-area/TextArea'
 import { Key } from './key'
+import { PatchFn } from '../utils/vdom'
 
-// textarea 和 editor 的关联关系
+// textarea - editor
 export const TEXTAREA_TO_EDITOR = new WeakMap<TextArea, IDomEditor>()
-export const EDITOR_TO_TEXTAREA = new WeakMap<IDomEditor, TextArea>()
+
+// vdom 相关的属性
+export const IS_FIRST_PATCH = new WeakMap<TextArea, boolean>()
+export const TEXTAREA_TO_PATCH_FN = new WeakMap<TextArea, PatchFn>()
+export const TEXTAREA_TO_VNODE = new WeakMap<TextArea, VNode>()
 
 /**
  * Two weak maps that allow us rebuild a path given a node. They are populated
@@ -23,7 +29,7 @@ export const NODE_TO_PARENT: WeakMap<Node, Ancestor> = new WeakMap()
  * Weak maps that allow us to go between Slate nodes and DOM nodes. These
  * are used to resolve DOM event-related logic into Slate actions.
  */
-export const EDITOR_TO_ELEMENT: WeakMap<Editor, HTMLElement> = new WeakMap() // 和上面的 EDITOR_TO_TEXTAREA 是否重复？？？
+export const EDITOR_TO_ELEMENT: WeakMap<Editor, HTMLElement> = new WeakMap()
 export const EDITOR_TO_PLACEHOLDER: WeakMap<Editor, string> = new WeakMap()
 export const ELEMENT_TO_NODE: WeakMap<HTMLElement, Node> = new WeakMap()
 export const KEY_TO_ELEMENT: WeakMap<Key, HTMLElement> = new WeakMap()

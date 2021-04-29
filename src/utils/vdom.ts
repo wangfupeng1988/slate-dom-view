@@ -14,10 +14,13 @@ import {
     // eventListenersModule
 } from "snabbdom"
 
+export type PatchFn = (oldVnode: VNode | Element, vnode: VNode) => VNode
+
 /**
  * 创建 snabbdom patch
+ * @returns snabbdom patch 函数
  */
-export function genPatchFn() {
+export function genPatchFn(): PatchFn {
     const patch = init([
         // Init patch function with chosen modules
         classModule, // makes it easy to toggle classes
