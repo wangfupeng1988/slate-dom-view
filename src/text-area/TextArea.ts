@@ -4,21 +4,31 @@
  */
 
 import { Transforms } from 'slate'
-import { throttle, toArray } from 'lodash-es'
+import { throttle } from 'lodash-es'
+
 import $, { Dom7Array } from '../utils/dom'
 import { TEXTAREA_TO_EDITOR } from '../utils/weak-maps'
 import { IDomEditor } from '../editor/dom-editor'
-import patchView from './patchView'
+import updateView from './updateView'
+import { IConfig } from '../config/index'
+import { DOMElement } from '../utils/dom'
+import { editorSelectionToDOM } from './syncSelection'
 
 let ID = 1
 
 class TextArea {
     id: number
     $textAreaContainer: Dom7Array
+    config: IConfig
+    isComposing: boolean = false
+    isUpdatingSelection: boolean = false
+    private latestElement: DOMElement | null = null
 
-    constructor(textAreaContainerId: string) {
+    constructor(textAreaContainerId: string, config: IConfig) {
         // id 不能重复
         this.id = ID++
+
+        this.config = config
 
         // 初始化 dom
         const $textAreaContainer  = $(`#${textAreaContainerId}`)
@@ -28,33 +38,28 @@ class TextArea {
         this.observeSelectionChange()
     }
 
-    private getEditorInstance(): IDomEditor | null {
+    private getEditorInstance(): IDomEditor {
         const editor = TEXTAREA_TO_EDITOR.get(this)
-        return editor || null
+        if (editor == null) throw new Error('Can not ge editor instance')
+        return editor
     }
 
     /**
      * editor.onchange 时触发
      */
     onEditorChange() {
-        this.updateView()
-    }
-
-    /**
-     * 更新视图
-     */
-    private updateView() {
-        // 获取 editor
         const editor = this.getEditorInstance()
-        if (editor == null) return
 
-        patchView(this, editor)
+        // 更新 DOM
+        updateView(this, editor)
+
+        // 同步选区
+        editorSelectionToDOM(this, editor)
     }
 
     private observeSelectionChange() {
         const onDOMSelectionChange = throttle(() => {
             const editor = this.getEditorInstance()
-            if (editor == null) return
 
             // const { activeElement } = window.document
             const domSelection = window.getSelection()

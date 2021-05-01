@@ -10,7 +10,15 @@ import TextArea from './TextArea'
 import { genPatchFn } from '../utils/vdom'
 import $, { Dom7Array } from '../utils/dom'
 import { node2Vnode } from '../formats/index'
-import { IS_FIRST_PATCH, TEXTAREA_TO_PATCH_FN, TEXTAREA_TO_VNODE, EDITOR_TO_ELEMENT } from '../utils/weak-maps'
+import {
+    IS_FIRST_PATCH,
+    TEXTAREA_TO_PATCH_FN,
+    TEXTAREA_TO_VNODE,
+    EDITOR_TO_ELEMENT,
+    NODE_TO_ELEMENT,
+    ELEMENT_TO_NODE,
+    IS_FOCUSED
+} from '../utils/weak-maps'
 
 function genElemId(id: number) {
     return `w-e-textarea-${id}`
@@ -40,7 +48,7 @@ function genRootElem(elemId: string): Dom7Array {
  * @param textarea textarea
  * @param editor editor
  */
-function patchView(textarea: TextArea, editor: IDomEditor) {
+function updateView(textarea: TextArea, editor: IDomEditor) {
     const $textAreaContainer = textarea.$textAreaContainer
     const elemId = genElemId(textarea.id)
 
@@ -49,7 +57,6 @@ function patchView(textarea: TextArea, editor: IDomEditor) {
     const content = editor.children || []
     newVnode.children = content.map(node => node2Vnode(node))
 
-    // 是否是第一次 patch ？
     let isFirstPatch = IS_FIRST_PATCH.get(textarea)
     if (isFirstPatch == null) isFirstPatch = true // 尚未赋值，也是第一次
     if (isFirstPatch) {
@@ -62,24 +69,32 @@ function patchView(textarea: TextArea, editor: IDomEditor) {
         patchFn($textArea[0], newVnode)
 
         // 存储相关信息
-        IS_FIRST_PATCH.set(textarea, false) // 不再是第一次 patchView
+        IS_FIRST_PATCH.set(textarea, false) // 不再是第一次 patch
         TEXTAREA_TO_PATCH_FN.set(textarea, patchFn) // 存储 patch 函数
-        TEXTAREA_TO_VNODE.set(textarea, newVnode) // 存储 vnode
-        EDITOR_TO_ELEMENT.set(editor, document.getElementById(elemId) as HTMLElement) // 存储 editor -> elem 对应关系
-        return
+        
+    } else {
+        // 不是第一次 patch
+        const curVnode = TEXTAREA_TO_VNODE.get(textarea)
+        const patchFn = TEXTAREA_TO_PATCH_FN.get(textarea)
+        if (curVnode == null || patchFn == null) return
+
+        patchFn(curVnode, newVnode)
     }
 
-    // 不是第一次 patch
-    const curVnode = TEXTAREA_TO_VNODE.get(textarea)
-    const patchFn = TEXTAREA_TO_PATCH_FN.get(textarea)
-    const textareaElem = document.getElementById(elemId)
-    if (curVnode == null || patchFn == null || textareaElem == null) return
-
-    patchFn(curVnode, newVnode)
-
     // 存储相关信息
+    const textareaElem = document.getElementById(elemId) as HTMLElement
     TEXTAREA_TO_VNODE.set(textarea, newVnode) // 存储 vnode
-    EDITOR_TO_ELEMENT.set(editor, textareaElem) // 存储 editor -> elem 对应关系
+    EDITOR_TO_ELEMENT.set(editor, textareaElem!) // 存储 editor -> elem 对应关系
+    NODE_TO_ELEMENT.set(editor, textareaElem!)
+    ELEMENT_TO_NODE.set(textareaElem!, editor)
+
+    // focus
+    if (textarea.config.autoFocus) {
+        textareaElem.focus()
+        IS_FOCUSED.set(editor, true)
+    } else {
+        IS_FOCUSED.delete(editor)
+    }
 }
 
-export default debounce(patchView, 100) // 设置 DOM 操作，适当防抖
+export default debounce(updateView, 100) // 涉及 DOM 操作，适当防抖

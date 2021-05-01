@@ -7,6 +7,7 @@ import { createEditor, Node } from 'slate'
 import { withDOM } from './editor/with-dom'
 import TextArea from './text-area/TextArea'
 import { TEXTAREA_TO_EDITOR, EDITOR_TO_ON_CHANGE } from './utils/weak-maps'
+import { IConfig, genDefaultConfig } from './config/index'
 
 /**
  * 获取默认的初始化内容
@@ -20,16 +21,27 @@ function genDefaultInitialContent() {
     ]
 }
 
+function getConfig(userConfig: IConfig): IConfig {
+    const defaultConfig = genDefaultConfig()
+    return {
+        ...defaultConfig,
+        ...userConfig
+    }
+}
+
 /**
  * 创建 wangEditor 实例
  * @param containerId textarea container elem id
  * @param content initial content
  * @returns editor
  */
-function createWangEditor(containerId: string, content?: Node[]) {
-    const editor = withDOM(createEditor())
-    const textarea = new TextArea(containerId)
+function createWangEditor(containerId: string, content?: Node[], config?: IConfig) {
+    // 生成配置
+    let editorConfig = getConfig(config || {})
 
+    // 创建实例
+    const editor = withDOM(createEditor())
+    const textarea = new TextArea(containerId, editorConfig)
     // 绑定 textarea 到 editor ，以便在 textarea 中可以访问到 editor
     TEXTAREA_TO_EDITOR.set(textarea, editor)
 
@@ -42,9 +54,13 @@ function createWangEditor(containerId: string, content?: Node[]) {
 
     // 绑定 editor onchange
     EDITOR_TO_ON_CHANGE.set(editor, () => {
+        console.log('editor changed', editor)
+
+        // 触发 textarea DOM 变化
         textarea.onEditorChange()
 
-        // TODO 触发用户配置的 onchange 函数
+        // 触发用户配置的 onchange 函数
+        if (editorConfig.onChange) editorConfig.onChange()
     })
 
     return editor
