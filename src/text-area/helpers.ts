@@ -29,42 +29,34 @@ export const isRangeEqual = (a: DOMRange, b: DOMRange) => {
 }
 
 /**
- * Check if the target is in the editor.
- */
-export const hasTarget = (
-    editor: IDomEditor,
-    target: EventTarget | null
-): target is DOMNode => {
-    return isDOMNode(target) && DomEditor.hasDOMNode(editor, target)
-}
-
-/**
  * Check if the target is editable and in the editor.
  */
-export const hasEditableTarget = (
-    editor: IDomEditor,
-    target: EventTarget | null
-): target is DOMNode => {
+export function hasEditableTarget (editor: IDomEditor, target: EventTarget | null): target is DOMNode {
     return (
-        isDOMNode(target) && DomEditor.hasDOMNode(editor, target, { editable: true })
+      isDOMNode(target) &&
+      DomEditor.hasDOMNode(editor, target, { editable: true })
     )
 }
 
 /**
  * Check if the target is inside void and in the editor.
  */
-export const isTargetInsideVoid = (
-    editor: IDomEditor,
-    target: EventTarget | null
-): boolean => {
+export function isTargetInsideVoid(editor: IDomEditor, target: EventTarget | null): boolean {
     const slateNode = hasTarget(editor, target) && DomEditor.toSlateNode(editor, target)
     return Editor.isVoid(editor, slateNode)
 }
 
 /**
+ * Check if the target is in the editor.
+ */
+export function hasTarget(editor: IDomEditor, target: EventTarget | null): target is DOMNode {
+    return isDOMNode(target) && DomEditor.hasDOMNode(editor, target)
+}
+
+/**
  * Check if a DOM event is overrode by a handler.
  */
-export const isDOMEventHandled = (event: Event, handler?: (event: Event) => void) => {
+export function isDOMEventHandled(event: Event, handler?: (event: Event) => void) {
     if (!handler) {
         return false
     }

@@ -15,8 +15,7 @@ import {
     TEXTAREA_TO_VNODE,
     EDITOR_TO_ELEMENT,
     NODE_TO_ELEMENT,
-    ELEMENT_TO_NODE,
-    IS_FOCUSED
+    ELEMENT_TO_NODE
 } from '../utils/weak-maps'
 
 function genElemId(id: number) {
@@ -66,14 +65,20 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
         // 第一次 patch ，先生成 elem
         const $textArea = genRootElem(elemId)
         $textAreaContainer.append($textArea)
+        const textareaElem = $textArea[0]
 
         // 再生成 patch 函数，并执行
         const patchFn = genPatchFn()
-        patchFn($textArea[0], newVnode)
+        patchFn(textareaElem, newVnode)
 
         // 存储相关信息
         IS_FIRST_PATCH.set(textarea, false) // 不再是第一次 patch
         TEXTAREA_TO_PATCH_FN.set(textarea, patchFn) // 存储 patch 函数
+
+        // focus
+        if (textarea.config.autoFocus) {
+            (textareaElem as HTMLElement).focus()
+        }
 
     } else {
         // 不是第一次 patch
@@ -90,14 +95,6 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
     EDITOR_TO_ELEMENT.set(editor, textareaElem!) // 存储 editor -> elem 对应关系
     NODE_TO_ELEMENT.set(editor, textareaElem!)
     ELEMENT_TO_NODE.set(textareaElem!, editor)
-
-    // focus
-    if (textarea.config.autoFocus) {
-        isFirstPatch && textareaElem.focus()
-        IS_FOCUSED.set(editor, true)
-    } else {
-        IS_FOCUSED.delete(editor)
-    }
 }
 
 export default updateView

@@ -3,13 +3,14 @@
  * @author wangfupeng
  */
 
-import { Range } from 'slate'
+import { Editor, Range, Transforms } from 'slate'
 import scrollIntoView from 'scroll-into-view-if-needed'
 
 import { IDomEditor, DomEditor } from '../editor/dom-editor'
 import TextArea from './TextArea'
-import { EDITOR_TO_ELEMENT } from '../utils/weak-maps'
+import { EDITOR_TO_ELEMENT, IS_FOCUSED } from '../utils/weak-maps'
 import { IS_FIREFOX } from '../utils/ua'
+import { hasEditableTarget, isTargetInsideVoid } from './helpers'
 
 /**
  * editor onchange 时，将 editor selection 同步给 DOM
@@ -92,6 +93,45 @@ export function editorSelectionToDOM(textarea: TextArea, editor: IDomEditor): vo
     })
 }
 
-export function DOMSelectionToEditor() {
+/**
+ * DOM selection change 时，讲 DOM selection 同步给 slate
+ * @param textarea textarea
+ * @param editor editor
+ */
+export function DOMSelectionToEditor(textarea: TextArea, editor: IDomEditor) {
+    const { config, isComposing, isUpdatingSelection } = textarea
+    if (config.readOnly) return
+    if (isComposing) return
+    if (isUpdatingSelection) return
 
+    const { activeElement } = window.document
+    const el = DomEditor.toDOMNode(editor, editor)
+    const domSelection = window.getSelection()
+
+    if (activeElement === el) {
+        textarea.latestElement = activeElement
+        IS_FOCUSED.set(editor, true)
+    } else {
+        IS_FOCUSED.delete(editor)
+    }
+
+    if (!domSelection) {
+        return Transforms.deselect(editor)
+    }
+
+    const { anchorNode, focusNode } = domSelection
+
+    const anchorNodeSelectable =
+        hasEditableTarget(editor, anchorNode) ||
+        isTargetInsideVoid(editor, anchorNode)
+    const focusNodeSelectable =
+        hasEditableTarget(editor, focusNode) ||
+        isTargetInsideVoid(editor, focusNode)
+
+    if (anchorNodeSelectable && focusNodeSelectable) {
+        const range = DomEditor.toSlateRange(editor, domSelection)
+        Transforms.select(editor, range)
+    } else {
+        Transforms.deselect(editor)
+    }
 }
