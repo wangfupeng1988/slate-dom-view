@@ -55,7 +55,7 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
     // 生成 newVnode
     const newVnode = genRootVnode(elemId)
     const content = editor.children || []
-    newVnode.children = content.map(node => node2Vnode(node))
+    newVnode.children = content.map((node, i) => node2Vnode(node, i, editor, editor))
 
     let isFirstPatch = IS_FIRST_PATCH.get(textarea)
     if (isFirstPatch == null) isFirstPatch = true // 尚未赋值，也是第一次

@@ -120,9 +120,13 @@ export const DomEditor = {
      * Find the native DOM element from a Slate node or editor.
      */
     toDOMNode(editor: IDomEditor, node: Node): HTMLElement {
-        const domNode = Editor.isEditor(node)
-            ? EDITOR_TO_ELEMENT.get(editor)
-            : KEY_TO_ELEMENT.get(DomEditor.findKey(editor, node))
+        let domNode
+        const isEditor = Editor.isEditor(node)
+        if (isEditor) {
+            domNode = EDITOR_TO_ELEMENT.get(editor)
+        } else {
+            domNode = KEY_TO_ELEMENT.get(DomEditor.findKey(editor, node))
+        }
 
         if (!domNode) {
             throw new Error(

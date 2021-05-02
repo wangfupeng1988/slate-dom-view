@@ -3,41 +3,46 @@
  * @author wangfupeng
  */
 
-import { Node as SlateNode } from 'slate'
+import { Element, Text, Node, Ancestor } from 'slate'
 import { VNode } from 'snabbdom'
+import { IDomEditor } from '../editor/dom-editor'
 import { normalizeVnodeData } from '../utils/vdom'
-
-// 引入各个 format
-import paragraphFormatConf from './basic-formats/paragraph'
-import textFormatConf from './basic-formats/text'
-
-// 用于存储所有 formats
-interface IFormats {
-    [key: string]: (node: SlateNode) => VNode
-}
-const FORMATS: IFormats = {}
-
-// 注册 formats
-FORMATS[paragraphFormatConf.type] = paragraphFormatConf.genVnode
-FORMATS[textFormatConf.type] = textFormatConf.genVnode
-
+import { renderElement } from './element'
+import renderText from './text'
+import { NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps'
 
 /**
  * 根据 slate node 生成 snabbdom vnode
  * @param node node
+ * @param index node index in parent.children
+ * @param parent parent node
+ * @param editor editor
  */
-export function node2Vnode(node: SlateNode): VNode {
-    let vnode: VNode
-
+export function node2Vnode(node: Node, index: number, parent: Ancestor, editor: IDomEditor): VNode {
     // @ts-ignore
-    let genVNode = node.type ? FORMATS[node.type]
-                                : FORMATS['text']
+    const { type } = node
 
-    // 生成当前节点的 vnode
-    vnode = genVNode(node)
+    let vnode: VNode
+    let isText = false
+    if (Element.isElement(node)) {
+        // element
+        vnode = renderElement(node as Element, editor)
+    } else {
+        // text
+        isText = true
+        vnode = renderText(node as Text, editor)
+    }
 
-    // 整理 vnode.data
-    normalizeVnodeData(vnode)
+    // 存储信息
+    NODE_TO_INDEX.set(node, index)
+    NODE_TO_PARENT.set(node, parent)
+
+    // 设置 key 以提效 diff
+    if (vnode.data == null) vnode.data = {}
+    vnode.data.key = index
+
+    // 统一整理 vnode.data 以符合 snabbdom 的规则 （text 需要遍历子节点）
+    normalizeVnodeData(vnode, isText)
 
     return vnode
 }

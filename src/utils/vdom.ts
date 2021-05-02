@@ -38,13 +38,14 @@ const DATA_PRESERVE_KEYS = ['props', 'attrs', 'style', 'dataset', 'on', 'key', '
 /**
 * 整理 vnode.data ，将暴露出来的零散属性（如 id className data-xxx）放在 data.props 或 data.dataset
 * @param vnode vnode
+* @param needDeep 是否需要遍历子节点
 */
-export function normalizeVnodeData(vnode: VNode) {
+export function normalizeVnodeData(vnode: VNode, needDeep: boolean = false) {
     const { data = {}, children = [] } = vnode
     const dataKeys = Object.keys(data)
     dataKeys.forEach((key: string) => {
         // 忽略 data 保留属性
-        if (DATA_PRESERVE_KEYS.includes('key')) return
+        if (DATA_PRESERVE_KEYS.includes(key)) return
  
         // 获取 value
         const value = data[key]
@@ -68,11 +69,11 @@ export function normalizeVnodeData(vnode: VNode) {
         delete data[key] // 删掉原有的属性
     })
  
-    // // 遍历 children
-    // if (children.length > 0) {
-    //     children.forEach(child => {
-    //         if (typeof child === 'string') return
-    //         normalizeVnodeData(child)
-    //     })
-    // }
+    // 遍历 children
+    if (needDeep && children.length > 0) {
+        children.forEach(child => {
+            if (typeof child === 'string') return
+            normalizeVnodeData(child, needDeep)
+        })
+    }
  }
