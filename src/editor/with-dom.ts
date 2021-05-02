@@ -215,6 +215,9 @@ export const withDOM = <T extends Editor>(editor: T) => {
         if (type === 'image') {
             return true
         }
+        if (type === 'link') {
+            return true
+        }
 
         return isInline(elem)
     }
