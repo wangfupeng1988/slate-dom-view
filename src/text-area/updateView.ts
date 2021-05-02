@@ -3,7 +3,6 @@
  * @author wangfupeng
  */
 
-import { debounce } from 'lodash-es'
 import { h, VNode } from 'snabbdom'
 import { IDomEditor } from '../editor/dom-editor'
 import TextArea from './TextArea'
@@ -75,7 +74,7 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
         // 存储相关信息
         IS_FIRST_PATCH.set(textarea, false) // 不再是第一次 patch
         TEXTAREA_TO_PATCH_FN.set(textarea, patchFn) // 存储 patch 函数
-        
+
     } else {
         // 不是第一次 patch
         const curVnode = TEXTAREA_TO_VNODE.get(textarea)
@@ -94,11 +93,11 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
 
     // focus
     if (textarea.config.autoFocus) {
-        textareaElem.focus()
+        isFirstPatch && textareaElem.focus()
         IS_FOCUSED.set(editor, true)
     } else {
         IS_FOCUSED.delete(editor)
     }
 }
 
-export default debounce(updateView, 100) // 涉及 DOM 操作，适当防抖
+export default updateView

@@ -125,7 +125,8 @@ export const DomEditor = {
         if (isEditor) {
             domNode = EDITOR_TO_ELEMENT.get(editor)
         } else {
-            domNode = KEY_TO_ELEMENT.get(DomEditor.findKey(editor, node))
+            const key = DomEditor.findKey(editor, node)
+            domNode = KEY_TO_ELEMENT.get(key)
         }
 
         if (!domNode) {

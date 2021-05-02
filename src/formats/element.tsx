@@ -9,6 +9,7 @@ import { node2Vnode } from './index'
 import { IDomEditor, DomEditor } from '../editor/dom-editor'
 import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE, NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps'
 import { getRenderFn } from './render-elements/index'
+import { promiseResolveThen } from '../utils/util'
 
 interface IAttrs {
     id: string
@@ -78,7 +79,7 @@ export function renderElement(elemNode: SlateElement, editor: IDomEditor): VNode
     Object.assign(vnode.data, attrs)
 
     // 更新 element 相关的 weakMap
-    setTimeout(() => {
+    promiseResolveThen(() => {
         // 异步，否则拿不到 DOM 节点
         const dom = document.getElementById(domId) as HTMLElement
         KEY_TO_ELEMENT.set(key, dom)

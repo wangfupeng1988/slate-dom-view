@@ -13,6 +13,7 @@ import updateView from './updateView'
 import { IConfig } from '../config/index'
 import { DOMElement } from '../utils/dom'
 import { editorSelectionToDOM } from './syncSelection'
+import { promiseResolveThen } from '../utils/util'
 
 let ID = 1
 
@@ -45,17 +46,19 @@ class TextArea {
     }
 
     /**
-     * editor.onchange 时触发
+     * editor.onchange 时触发（涉及 DOM 操作，节流）
      */
-    onEditorChange() {
+    onEditorChange = throttle(() => {
         const editor = this.getEditorInstance()
 
         // 更新 DOM
         updateView(this, editor)
 
-        // 同步选区
-        editorSelectionToDOM(this, editor)
-    }
+        // 同步选区（异步，否则拿不到 DOM 渲染结果，vdom）
+        promiseResolveThen(() => {
+            editorSelectionToDOM(this, editor)
+        })
+    }, 100)
 
     private observeSelectionChange() {
         const onDOMSelectionChange = throttle(() => {

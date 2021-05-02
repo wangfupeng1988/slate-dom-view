@@ -15,3 +15,8 @@
 
 //     return `${prefix}-${d}${r}`
 // }
+
+export function promiseResolveThen(fn: Function) {
+    // @ts-ignore
+    Promise.resolve().then(fn)
+}

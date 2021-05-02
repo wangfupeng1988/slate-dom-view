@@ -9,6 +9,7 @@ import { IDomEditor, DomEditor } from '../editor/dom-editor'
 import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE } from '../utils/weak-maps'
 import genTextVnode from './render-text/genVnode'
 import addTextVnodeStyle from './render-text/addStyle'
+import { promiseResolveThen } from '../utils/util'
 
 function renderText(textNode: SlateText, parent: Ancestor, editor: IDomEditor): VNode {
     if (textNode.text == null) throw new Error(`Current node is not slate Text ${JSON.stringify(textNode)}`)
@@ -27,7 +28,7 @@ function renderText(textNode: SlateText, parent: Ancestor, editor: IDomEditor): 
     </span>
 
     // 更新 weak-map
-    setTimeout(() => {
+    promiseResolveThen(() => {
         // 异步，否则拿不到 DOM
         const dom = document.getElementById(textId) as HTMLElement
         KEY_TO_ELEMENT.set(key, dom)

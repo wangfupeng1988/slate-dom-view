@@ -12,7 +12,7 @@
             height: 300px;
             overflow-y: auto;
         }
-        #editor-view-container div[contenteditable] {
+        #editor-view-container > div[contenteditable="true"] {
             outline: 0;
             padding: 0 10px;
             height: 100%;
@@ -56,39 +56,39 @@
                     }
                 ]
             },
-            {
-                type: 'paragraph',
-                children: [
-                    {
-                        type: 'image',
-                        url: 'http://www.wangeditor.com/imgs/logo.jpeg',
-                        children: [{ text: '' }],
-                    },
-                    {
-                        text: "123",
-                    }
-                ]
-            },
-            {
-                type: 'paragraph',
-                children: [
-                    {
-                        text: "this is ",
-                    },
-                    {
-                        text: "bold",
-                        bold: true
-                    },
-                    {
-                        text: " text.",
-                    }
-                ]
-            },
-            {
-                type: 'video',
-                url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',
-                children: [{ text: '' }],
-            },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         {
+            //             type: 'image',
+            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+            //             children: [{ text: '' }],
+            //         },
+            //         {
+            //             text: "123",
+            //         }
+            //     ]
+            // },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         {
+            //             text: "this is ",
+            //         },
+            //         {
+            //             text: "bold",
+            //             bold: true
+            //         },
+            //         {
+            //             text: " text.",
+            //         }
+            //     ]
+            // },
+            // {
+            //     type: 'video',
+            //     url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',
+            //     children: [{ text: '' }],
+            // },
             {
                 type: 'paragraph',
                 children: [
