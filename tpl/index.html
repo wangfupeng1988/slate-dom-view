@@ -9,7 +9,7 @@
         #editor-view-container {
             border:  1px solid #ccc;
             width: 600px;
-            height: 400px;
+            height: 300px;
             overflow-y: auto;
         }
         #editor-view-container > div[contenteditable="true"] {
@@ -24,11 +24,6 @@
     </style>
 </head>
 <body>
-    <p>slate view</p>
-    <p>
-        <input>
-    </p>
-
     <div id="editor-view-container">
     </div>
 
@@ -36,6 +31,11 @@
         <button id="btn-set-selection">set selection</button>
         <button id="btn-insert-text">insert text</button>
         <button id="btn-insert-break">insert break</button>
+    </div>
+
+    <div style="margin-top: 10px;">
+        <p>curSelection: <span id="span-selection"></span></p>
+        <textarea id="text-content" rows="40" cols="100"></textarea>
     </div>
 
     <script>
@@ -56,39 +56,39 @@
                     }
                 ]
             },
-            {
-                type: 'paragraph',
-                children: [
-                    {
-                        type: 'image',
-                        url: 'http://www.wangeditor.com/imgs/logo.jpeg',
-                        children: [{ text: '' }],
-                    },
-                    {
-                        text: "123",
-                    }
-                ]
-            },
-            {
-                type: 'paragraph',
-                children: [
-                    {
-                        text: "this is ",
-                    },
-                    {
-                        text: "bold",
-                        bold: true
-                    },
-                    {
-                        text: " text.",
-                    }
-                ]
-            },
-            {
-                type: 'video',
-                url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',
-                children: [{ text: '' }],
-            },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         {
+            //             type: 'image',
+            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+            //             children: [{ text: '' }],
+            //         },
+            //         {
+            //             text: "123",
+            //         }
+            //     ]
+            // },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         {
+            //             text: "this is ",
+            //         },
+            //         {
+            //             text: "bold",
+            //             bold: true
+            //         },
+            //         {
+            //             text: " text.",
+            //         }
+            //     ]
+            // },
+            // {
+            //     type: 'video',
+            //     url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',
+            //     children: [{ text: '' }],
+            // },
             {
                 type: 'paragraph',
                 children: [

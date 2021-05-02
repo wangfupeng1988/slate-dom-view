@@ -3,7 +3,7 @@
  * @author wangfupeng
  */
 
-import { $, css, append, addClass, on, focus, attr, hide, scrollTop, offset, parents, is, dataset } from 'dom7'
+import { $, css, append, addClass, on, focus, attr, hide, scrollTop, offset, parents, is, dataset, val, text } from 'dom7'
 export { Dom7Array } from 'dom7'
 
 $.fn.css = css
@@ -18,6 +18,8 @@ $.fn.offset = offset
 $.fn.parents = parents
 $.fn.is = is
 $.fn.dataset = dataset
+$.fn.val = val
+$.fn.text = text
 
 export default $
 

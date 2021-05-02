@@ -94,7 +94,7 @@ export function editorSelectionToDOM(textarea: TextArea, editor: IDomEditor): vo
 }
 
 /**
- * DOM selection change 时，讲 DOM selection 同步给 slate
+ * DOM selection change 时，把 DOM selection 同步给 slate
  * @param textarea textarea
  * @param editor editor
  */

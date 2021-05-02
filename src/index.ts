@@ -10,7 +10,12 @@ import $ from './utils/dom'
 // ----------------------------- 分割线 -----------------------------
 
 // @ts-ignore
-const we = createWangEditor('editor-view-container', window.content)
+const we = createWangEditor('editor-view-container', window.content, {
+    onChange() {
+        $('#span-selection').text(JSON.stringify(we.selection))
+        $('#text-content').val(JSON.stringify(we.children, null, 2))
+    }
+})
 
 $('#btn-set-selection').on('click', () => {
     Transforms.select(we, {

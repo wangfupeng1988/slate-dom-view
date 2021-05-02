@@ -11,6 +11,7 @@ import updateView from './updateView'
 import { IConfig } from '../config/index'
 import { DOMElement } from '../utils/dom'
 import { editorSelectionToDOM, DOMSelectionToEditor } from './syncSelection'
+import handleBeforeInput from './beforeInputHandler'
 import { promiseResolveThen } from '../utils/util'
 
 let ID = 1
@@ -36,6 +37,11 @@ class TextArea {
         // 监听 selection change
         window.document.addEventListener('selectionchange', this.onDOMSelectionChange)
         // TODO editor 销毁时，解绑事件
+
+        // 监听劫持 beforeInput
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/beforeinput_event
+        $textAreaContainer[0].addEventListener('beforeinput', this.onDOMBeforeInput.bind(this))
+        // TODO editor 销毁时，解绑事件
     }
 
     private getEditorInstance(): IDomEditor {
@@ -49,10 +55,18 @@ class TextArea {
         DOMSelectionToEditor(this, editor)
     }, 100)
 
+    private onDOMBeforeInput(event: Event) {
+        const editor = this.getEditorInstance()
+        // @ts-ignore
+        handleBeforeInput(event, this, editor)
+    }
+
     /**
-     * editor.onchange 时触发（涉及 DOM 操作，节流）
+     * editor.onchange 时触发
+     * 【注意】如果频繁触发，会导致 DOM 频繁更新（diff patch 没有 React 那么强大），但加*节流*又怕丢失 beforeInput 的 insertText ？？？
+     * 感觉这里还是要考虑节流的，考虑一种方式缓存 insertText 数据 ？？？
      */
-    onEditorChange = throttle(() => {
+    onEditorChange() {
         const editor = this.getEditorInstance()
 
         // 更新 DOM
@@ -62,7 +76,7 @@ class TextArea {
         promiseResolveThen(() => {
             editorSelectionToDOM(this, editor)
         })
-    }, 100)
+    }
 }
 
 export default TextArea
