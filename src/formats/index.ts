@@ -19,6 +19,10 @@ import { NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps'
  * @param editor editor
  */
 export function node2Vnode(node: Node, index: number, parent: Ancestor, editor: IDomEditor): VNode {
+    // 设置相关 weakMap 信息
+    NODE_TO_INDEX.set(node, index)
+    NODE_TO_PARENT.set(node, parent)
+
     // @ts-ignore
     const { type } = node
 
@@ -30,12 +34,8 @@ export function node2Vnode(node: Node, index: number, parent: Ancestor, editor: 
     } else {
         // text
         isText = true
-        vnode = renderText(node as Text, editor)
+        vnode = renderText(node as Text, parent, editor)
     }
-
-    // 存储信息
-    NODE_TO_INDEX.set(node, index)
-    NODE_TO_PARENT.set(node, parent)
 
     // 设置 key 以提效 diff
     if (vnode.data == null) vnode.data = {}

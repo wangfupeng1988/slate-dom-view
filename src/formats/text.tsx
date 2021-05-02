@@ -3,7 +3,7 @@
  * @author wangfupeng
  */
 
-import { Text as SlateText } from 'slate'
+import { Editor, Path, Node, Text as SlateText, Ancestor } from 'slate'
 import { jsx, VNode } from 'snabbdom'
 import { IDomEditor, DomEditor } from '../editor/dom-editor'
 import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE } from '../utils/weak-maps'
@@ -13,7 +13,7 @@ import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE } from '../utils/weak-
  * @param node slate text node
  * @param vnode str vnode
  */
-function addTextStyle(node: SlateText, vnode: VNode): VNode {
+function addStyle(node: SlateText, vnode: VNode): VNode {
     // @ts-ignore
     const { bold, italic, underline, code } = node
     let styleVnode: VNode = vnode
@@ -36,15 +36,69 @@ function addTextStyle(node: SlateText, vnode: VNode): VNode {
     return styleVnode
 }
 
-function renderText(textNode: SlateText, editor: IDomEditor): VNode {
-    if (!textNode.text) throw new Error(`Current node is not slate Text`)
+function str(text: string, isTrailing = false): VNode {
+    return <span data-slate-string>
+        {text}
+        {isTrailing ? '\n' : null}
+    </span>
+}
+
+function zeroWidthStr(length = 0, isLineBreak = false): VNode {
+    return <span
+        data-slate-zero-width={isLineBreak ? 'n' : 'z'}
+        data-slate-length={length}
+    >
+        {'\uFEFF'}
+        {isLineBreak ? <br /> : null}
+    </span>
+}
+
+function genStrVnode(textNode: SlateText, parent: Ancestor, editor: IDomEditor): VNode {
+    const { text } = textNode
+    const path = DomEditor.findPath(editor, textNode)
+    const parentPath = Path.parent(path)
+
+    // COMPAT: Render text inside void nodes with a zero-width space.
+    // So the node can contain selection but the text is not visible.
+    if (editor.isVoid(parent)) {
+        return zeroWidthStr(Node.string(parent).length)
+    }
+
+    // COMPAT: If this is the last text node in an empty block, render a zero-
+    // width space that will convert into a line break when copying and pasting
+    // to support expected plain text.
+    if (
+        text === '' &&
+        parent.children[parent.children.length - 1] === textNode &&
+        !editor.isInline(parent) &&
+        Editor.string(editor, parentPath) === ''
+    ) {
+        return zeroWidthStr(0, true)
+    }
+
+    // COMPAT: If the text is empty, it's because it's on the edge of an inline
+    // node, so we render a zero-width space so that the selection can be
+    // inserted next to it still.
+    if (text === '') {
+        return zeroWidthStr()
+    }
+
+    // COMPAT: Browsers will collapse trailing new lines at the end of blocks,
+    // so we need to add an extra trailing new lines to prevent that.
+    if (text.slice(-1) === '\n') {
+        return str(text, true)
+    }
+
+    return str(text)
+}
+
+function renderText(textNode: SlateText, parent: Ancestor, editor: IDomEditor): VNode {
+    if (!textNode.text) throw new Error(`Current node is not slate Text ${JSON.stringify(textNode)}`)
     const key = DomEditor.findKey(editor, textNode)
 
     // 文字和样式
-    let strVnode = <span data-slate-string>
-        {textNode.text}
-    </span>
-    strVnode = addTextStyle(textNode, strVnode)
+    let strVnode = genStrVnode(textNode, parent, editor)
+    strVnode = addStyle(textNode, strVnode)
 
     // 生成 text vnode
     const textId = `w-e-text-${key.id}`
