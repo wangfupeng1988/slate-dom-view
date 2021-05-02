@@ -93,7 +93,7 @@ function genStrVnode(textNode: SlateText, parent: Ancestor, editor: IDomEditor):
 }
 
 function renderText(textNode: SlateText, parent: Ancestor, editor: IDomEditor): VNode {
-    if (!textNode.text) throw new Error(`Current node is not slate Text ${JSON.stringify(textNode)}`)
+    if (textNode.text == null) throw new Error(`Current node is not slate Text ${JSON.stringify(textNode)}`)
     const key = DomEditor.findKey(editor, textNode)
 
     // 文字和样式
@@ -102,8 +102,8 @@ function renderText(textNode: SlateText, parent: Ancestor, editor: IDomEditor): 
 
     // 生成 text vnode
     const textId = `w-e-text-${key.id}`
-    const vnode = <span data-slate-node="text" id={textId}>
-        <span data-slate-leaf key={1}>
+    const vnode = <span data-slate-node="text" id={textId} key={key.id}>
+        <span data-slate-leaf>
             {strVnode}
         </span>
     </span>

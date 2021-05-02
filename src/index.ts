@@ -10,7 +10,7 @@ import $ from './utils/dom'
 // ----------------------------- 分割线 -----------------------------
 
 // @ts-ignore
-const we = createWangEditor('editor-view-container', window.content1)
+const we = createWangEditor('editor-view-container', window.content)
 
 $('#btn-set-selection').on('click', () => {
     Transforms.select(we, {

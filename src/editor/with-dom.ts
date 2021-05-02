@@ -14,7 +14,7 @@ import { isDOMText, getPlainText } from '../utils/dom'
  */
 export const withDOM = <T extends Editor>(editor: T) => {
     const e = editor as T & IDomEditor
-    const { apply, onChange } = e
+    const { apply, onChange, isVoid, isInline } = e
 
     // 重写 apply 方法
     // apply 方法非常重要，它最终执行 operation https://docs.slatejs.org/concepts/05-operations
@@ -190,6 +190,33 @@ export const withDOM = <T extends Editor>(editor: T) => {
         }
 
         onChange()
+    }
+
+    // 重写 isVoid
+    e.isVoid = elem => {
+        // @ts-ignore
+        const { type } = elem
+
+        if (type === 'image') {
+            return true
+        }
+        if (type === 'video') {
+            return true
+        }
+
+        return isVoid(elem)
+    }
+
+    // 重写 isInline
+    e.isInline = elem => {
+        // @ts-ignore
+        const { type } = elem
+
+        if (type === 'image') {
+            return true
+        }
+
+        return isInline(elem)
     }
 
     // 最后要返回 editor 实例 - 重要！！！

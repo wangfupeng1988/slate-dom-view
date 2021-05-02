@@ -10,6 +10,7 @@
             border:  1px solid #ccc;
             width: 400px;
             height: 300px;
+            overflow-y: auto;
         }
         #editor-view-container div[contenteditable] {
             outline: 0;
@@ -38,12 +39,25 @@
     </div>
 
     <script>
-        window.content1 = [
+        window.content = [
             {
                 type: 'paragraph',
                 children: [
                     {
                         text: "hello world ~~~",
+                    }
+                ]
+            },
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        type: 'image',
+                        url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+                        children: [{ text: '' }],
+                    },
+                    {
+                        text: "123",
                     }
                 ]
             },
@@ -62,32 +76,20 @@
                     }
                 ]
             },
-        ];
-        window.content2 = [
             {
-                type: 'paragraph',
-                children: [
-                    {
-                        text: "hello world",
-                    }
-                ]
+                type: 'video',
+                url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',
+                children: [{ text: '' }],
             },
             {
                 type: 'paragraph',
                 children: [
                     {
-                        text:
-                        "Since it's rich text, you can do things like turn a selection of text ",
-                    },
-                    // @ts-ignore
-                    { text: 'bold', bold: true },
-                    {
-                        text:
-                        ', or add a semantically rendered block quote in the middle of the page, like this:',
-                    },
-                ],
-            }
-        ];
+                        text: "The end.",
+                    }
+                ]
+            },
+        ]
     </script>
 </body>
 </html>

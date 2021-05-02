@@ -33,22 +33,26 @@ export function genPatchFn(): PatchFn {
 }
 
 // vnode.data 保留属性，参考 snabbdom VNodeData
-const DATA_PRESERVE_KEYS = ['props', 'attrs', 'style', 'dataset', 'on', 'key', 'hook']
+const DATA_PRESERVE_KEYS = ['props', 'attrs', 'style', 'dataset', 'on', 'hook']
 
 /**
 * 整理 vnode.data ，将暴露出来的零散属性（如 id className data-xxx）放在 data.props 或 data.dataset
 * @param vnode vnode
-* @param needDeep 是否需要遍历子节点
 */
-export function normalizeVnodeData(vnode: VNode, needDeep: boolean = false) {
+export function normalizeVnodeData(vnode: VNode) {
     const { data = {}, children = [] } = vnode
     const dataKeys = Object.keys(data)
     dataKeys.forEach((key: string) => {
+        const value = data[key]
+
+        // 赋值 key
+        if (key === 'key') {
+            vnode.key = value
+            return
+        }
+
         // 忽略 data 保留属性
         if (DATA_PRESERVE_KEYS.includes(key)) return
- 
-        // 获取 value
-        const value = data[key]
  
         // dataset
         if (key.startsWith('data-')) {
@@ -70,10 +74,10 @@ export function normalizeVnodeData(vnode: VNode, needDeep: boolean = false) {
     })
  
     // 遍历 children
-    if (needDeep && children.length > 0) {
+    if (children.length > 0) {
         children.forEach(child => {
             if (typeof child === 'string') return
-            normalizeVnodeData(child, needDeep)
+            normalizeVnodeData(child)
         })
     }
  }

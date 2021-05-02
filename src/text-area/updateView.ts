@@ -7,7 +7,7 @@ import { debounce } from 'lodash-es'
 import { h, VNode } from 'snabbdom'
 import { IDomEditor } from '../editor/dom-editor'
 import TextArea from './TextArea'
-import { genPatchFn } from '../utils/vdom'
+import { genPatchFn, normalizeVnodeData } from '../utils/vdom'
 import $, { Dom7Array } from '../utils/dom'
 import { node2Vnode } from '../formats/index'
 import {
@@ -55,7 +55,11 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
     // 生成 newVnode
     const newVnode = genRootVnode(elemId)
     const content = editor.children || []
-    newVnode.children = content.map((node, i) => node2Vnode(node, i, editor, editor))
+    newVnode.children = content.map((node, i) => {
+        let vnode = node2Vnode(node, i, editor, editor)
+        normalizeVnodeData(vnode) // 整理 vnode.data 以符合 snabbdom 的要求
+        return vnode
+    })
 
     let isFirstPatch = IS_FIRST_PATCH.get(textarea)
     if (isFirstPatch == null) isFirstPatch = true // 尚未赋值，也是第一次
