@@ -12,8 +12,10 @@
             height: 300px;
             overflow-y: auto;
         }
-        #editor-view-container > div[contenteditable="true"] {
+        #editor-view-container [data-slate-editor] {
             outline: 0;
+            white-space: 'pre-wrap';
+            word-wrap: 'break-word';
             padding: 0 10px;
             height: 100%;
         }
@@ -56,34 +58,37 @@
                     }
                 ]
             },
-            // {
-            //     type: 'paragraph',
-            //     children: [
-            //         {
-            //             type: 'image',
-            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
-            //             children: [{ text: '' }],
-            //         },
-            //         {
-            //             text: "123",
-            //         }
-            //     ]
-            // },
-            // {
-            //     type: 'paragraph',
-            //     children: [
-            //         {
-            //             text: "this is ",
-            //         },
-            //         {
-            //             text: "bold",
-            //             bold: true
-            //         },
-            //         {
-            //             text: " text.",
-            //         }
-            //     ]
-            // },
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        text: "abc",
+                    },
+                    {
+                        type: 'image',
+                        url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+                        children: [{ text: '' }],
+                    },
+                    {
+                        text: "123",
+                    }
+                ]
+            },
+            {
+                type: 'paragraph',
+                children: [
+                    {
+                        text: "this is ",
+                    },
+                    {
+                        text: "bold",
+                        bold: true
+                    },
+                    {
+                        text: " text.",
+                    }
+                ]
+            },
             // {
             //     type: 'video',
             //     url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',

@@ -3,7 +3,7 @@
  * @author wangfupeng
  */
 
-import { throttle } from 'lodash-es'
+import { throttle, forEach } from 'lodash-es'
 import $, { Dom7Array } from '../utils/dom'
 import { TEXTAREA_TO_EDITOR } from '../utils/weak-maps'
 import { IDomEditor } from '../editor/dom-editor'
@@ -11,14 +11,15 @@ import updateView from './updateView'
 import { IConfig } from '../config/index'
 import { DOMElement } from '../utils/dom'
 import { editorSelectionToDOM, DOMSelectionToEditor } from './syncSelection'
-import handleBeforeInput from './beforeInputHandler'
 import { promiseResolveThen } from '../utils/util'
+import eventHandlerConf from './event-handlers/index'
 
 let ID = 1
 
 class TextArea {
     id: number
     $textAreaContainer: Dom7Array
+    $textArea: Dom7Array | null = null
     config: IConfig
     isComposing: boolean = false
     isUpdatingSelection: boolean = false
@@ -38,10 +39,10 @@ class TextArea {
         window.document.addEventListener('selectionchange', this.onDOMSelectionChange)
         // TODO editor 销毁时，解绑事件
 
-        // 监听劫持 beforeInput
-        // https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/beforeinput_event
-        $textAreaContainer[0].addEventListener('beforeinput', this.onDOMBeforeInput.bind(this))
-        // TODO editor 销毁时，解绑事件
+        // 绑定事件 - 异步，否则获取不到 DOM 节点
+        promiseResolveThen(
+            this.bindEvent.bind(this)
+        )
     }
 
     private getEditorInstance(): IDomEditor {
@@ -55,10 +56,23 @@ class TextArea {
         DOMSelectionToEditor(this, editor)
     }, 100)
 
-    private onDOMBeforeInput(event: Event) {
+    /**
+     * 绑定事件，如 beforeinput onblur onfocus keydown click copy/paste drag/drop 等
+     */
+    private bindEvent() {
+        const $textArea = this.$textArea
         const editor = this.getEditorInstance()
-        // @ts-ignore
-        handleBeforeInput(event, this, editor)
+        
+        if ($textArea == null) return
+
+        // 遍历所有事件类型，绑定
+        forEach(eventHandlerConf, (fn, eventType) => {
+            $textArea.on(eventType, event => {
+                // @ts-ignore 忽略 event 类型的语法提示
+                fn(event, this, editor)
+            })
+            // TODO editor 销毁时，解绑事件
+        })
     }
 
     /**

@@ -59,8 +59,6 @@ function createWangEditor(containerId: string, content?: Node[], config?: IConfi
 
     // 绑定 editor onchange
     EDITOR_TO_ON_CHANGE.set(editor, () => {
-        console.log('--- editor changed ---', editor.selection)
-
         // 触发 textarea DOM 变化
         textarea.onEditorChange()
 

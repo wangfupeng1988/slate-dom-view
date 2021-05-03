@@ -12,6 +12,8 @@ import $ from './utils/dom'
 // @ts-ignore
 const we = createWangEditor('editor-view-container', window.content, {
     onChange() {
+        console.log('--- editor changed ---', we)
+
         $('#span-selection').text(JSON.stringify(we.selection))
         $('#text-content').val(JSON.stringify(we.children, null, 2))
     }

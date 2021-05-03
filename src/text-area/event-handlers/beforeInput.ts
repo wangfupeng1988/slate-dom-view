@@ -4,10 +4,11 @@
  */
 
 import { Editor, Transforms, Range } from 'slate'
-import { IDomEditor, DomEditor } from '../editor/dom-editor'
-import TextArea from './TextArea'
-import { hasEditableTarget, isDOMEventHandled } from './helpers'
-import { DOMStaticRange } from '../utils/dom'
+import { IDomEditor, DomEditor } from '../../editor/dom-editor'
+import TextArea from '../TextArea'
+import { hasEditableTarget } from '../helpers'
+import { DOMStaticRange } from '../../utils/dom'
+import { HAS_BEFORE_INPUT_SUPPORT } from '../../utils/ua'
 
 // 补充 beforeInput event 的属性
 interface BeforeInputEventType {
@@ -19,6 +20,7 @@ interface BeforeInputEventType {
 }
 
 function handleBeforeInput(event: Event & BeforeInputEventType, textarea: TextArea, editor: IDomEditor) {
+    if (!HAS_BEFORE_INPUT_SUPPORT) return // 有些浏览器完全不支持 beforeInput ，会用 keypress 和 keydown 兼容
     if (textarea.config.readOnly) return
     if (!hasEditableTarget(editor, event.target)) return
 
@@ -131,6 +133,7 @@ function handleBeforeInput(event: Event & BeforeInputEventType, textarea: TextAr
         case 'insertReplacementText':
         case 'insertText': {
             if (data instanceof DataTransfer) {
+                // 这里处理非纯文本（如 html 图片文件等）的粘贴。对于纯文本的粘贴，使用 paste 事件
                 DomEditor.insertData(editor, data)
             } else if (typeof data === 'string') {
                 Editor.insertText(editor, data)

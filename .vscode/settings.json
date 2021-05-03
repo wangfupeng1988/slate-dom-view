@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
         "beforeinput",
+        "compositionend",
+        "compositionstart",
         "contenteditable",
         "snabbdom",
         "vdom",

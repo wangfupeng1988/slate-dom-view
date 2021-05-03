@@ -25,20 +25,35 @@ function genElemId(id: number) {
 /**
  * 生成编辑区域节点的 vnode
  * @param elemId elemId
+ * @param readOnly readOnly
  */
-function genRootVnode(elemId: string): VNode {
+function genRootVnode(elemId: string, readOnly = false): VNode {
     return h(`div#${elemId}`, {
-        props: { contenteditable: true },
-        datasets: { slateEditor: true }
+        props: {
+            contenteditable: readOnly ? false : true,
+            suppressContentEditableWarning: true
+        },
+        datasets: {
+            slateEditor: true,
+            slateNode: "value"
+        }
     })
 }
 
 /**
  * 生成编辑区域的 elem
  * @param elemId elemId
+ * @param readOnly readOnly
  */
-function genRootElem(elemId: string): Dom7Array {
-    return $(`<div id="${elemId}" contenteditable="true" data-slate-editor></div>`)
+function genRootElem(elemId: string, readOnly = false): Dom7Array {
+    const contentEditableAttr = readOnly ? '' : 'contenteditable="true"'
+    return $(`<div
+        id="${elemId}"
+        ${contentEditableAttr}
+        data-slate-editor
+        data-slate-node="value"
+        suppressContentEditableWarning
+    ></div>`)
 }
 
 /**
@@ -51,7 +66,7 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
     const elemId = genElemId(textarea.id)
 
     // 生成 newVnode
-    const newVnode = genRootVnode(elemId)
+    const newVnode = genRootVnode(elemId, textarea.config.readOnly)
     const content = editor.children || []
     newVnode.children = content.map((node, i) => {
         let vnode = node2Vnode(node, i, editor, editor)
@@ -63,8 +78,9 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
     if (isFirstPatch == null) isFirstPatch = true // 尚未赋值，也是第一次
     if (isFirstPatch) {
         // 第一次 patch ，先生成 elem
-        const $textArea = genRootElem(elemId)
+        const $textArea = genRootElem(elemId, textarea.config.readOnly)
         $textAreaContainer.append($textArea)
+        textarea.$textArea = $textArea // 存储下编辑区域的 DOM 节点
         const textareaElem = $textArea[0]
 
         // 再生成 patch 函数，并执行

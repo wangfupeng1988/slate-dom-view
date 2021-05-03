@@ -179,6 +179,8 @@ export const withDOM = <T extends Editor>(editor: T) => {
                 split = true
             }
         }
+
+        // TODO data.files 拖拽上传图片，可参考 https://github.com/ianstormtaylor/slate/blob/main/site/examples/images.tsx
     }
 
     // 重写 onchange API
