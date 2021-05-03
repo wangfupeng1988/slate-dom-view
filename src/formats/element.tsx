@@ -43,9 +43,11 @@ export function renderElement(elemNode: SlateElement, editor: IDomEditor): VNode
     // void node 要特殊处理
     if (Editor.isVoid(editor, elemNode)) {
         attrs['data-slate-void'] = true
-        if (!readOnly && isInline) {
-            attrs.contentEditable = false
-        }
+
+        // 如果这里设置 contentEditable = false ，那图片就无法删除了 ？？？
+        // if (!readOnly && isInline) {
+        //     attrs.contentEditable = false
+        // }
 
         const Tag = isInline ? 'span' : 'div'
         const [[text]] = Node.texts(elemNode)
