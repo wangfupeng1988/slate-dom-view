@@ -11,6 +11,7 @@
             width: 600px;
             height: 300px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch; 
         }
         #editor-view-container [data-slate-editor] {
             outline: 0;
@@ -25,6 +26,9 @@
 
         .toolbar {
             margin-bottom: 10px;
+        }
+        .toolbar>* {
+            margin-right: 5px;
         }
         .toolbar .btn-active {
             color: blue;
@@ -43,72 +47,85 @@
 
     <script>
         window.content = [
-            {
-                type: 'header1',
-                children: [
-                    {
-                        text: "一行标题",
-                    },
-                    {
-                        text: "bold",
-                        bold: true
-                    }
-                ]
-            },
-            {
-                type: 'paragraph',
-                children: [
-                    {
-                        text: "hello world ~~~ ",
-                    },
-                    {
-                        text: 'background color',
-                        bgColor: 'yellow'
-                    },
-                    {
-                        text: " ",
-                    },
-                    {
-                        type: 'link',
-                        url: 'https://en.wikipedia.org/wiki/Hypertext',
-                        children: [{ text: 'hyperlinks' }],
-                    },
-                    {
-                        text: '!',
-                    }
-                ]
-            },
             // {
-            //     type: 'paragraph',
+            //     type: 'header1',
+            //     textAlign: 'center',
             //     children: [
             //         {
-            //             text: "abc",
+            //             text: "一行标题",
             //         },
             //         {
-            //             type: 'image',
-            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
-            //             children: [{ text: '' }],
-            //         },
-            //         {
-            //             text: "123",
+            //             text: "bold",
+            //             bold: true
             //         }
             //     ]
             // },
             {
                 type: 'paragraph',
                 children: [
+                    { text: "hello world ~~~ " },
                     {
-                        text: "this is ",
+                        text: 'background color',
+                        bgColor: 'yellow'
                     },
+                    { text: " " },
+                    {
+                        type: 'link',
+                        url: 'https://www.slatejs.org/examples/links',
+                        children: [{ text: 'slate examples' }],
+                    },
+                    { text: '!' }
+                ]
+            },
+            {
+                type: 'bulleted-list',
+                children: [
+                    {
+                        type: 'list-item',
+                        children: [{ text: '张三 and 张三 and 张三' }]
+                    },
+                    {
+                        type: 'list-item',
+                        children: [{ text: '李四 and 李四 and 李四' }]
+                    }
+                ]
+            },
+            {
+                type: 'numbered-list',
+                children: [
+                    {
+                        type: 'list-item',
+                        children: [{ text: '张三 and 张三 and 张三' }]
+                    },
+                    {
+                        type: 'list-item',
+                        children: [{ text: '李四 and 李四 and 李四' }]
+                    }
+                ]
+            },
+            {
+                type: 'paragraph',
+                children: [
+                    { text: "this is " },
                     {
                         text: "bold",
                         bold: true
                     },
-                    {
-                        text: " text.",
-                    }
+                    { text: " text." }
                 ]
             },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         { text: "abc" },
+            //         {
+            //             type: 'image',
+            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+            //             children: [{ text: '' }],
+            //         },
+            //         { text: "123" }
+            //     ]
+            // },
             // {
             //     type: 'video',
             //     url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',
@@ -117,9 +134,7 @@
             {
                 type: 'paragraph',
                 children: [
-                    {
-                        text: "The end.",
-                    }
+                    { text: "The end." }
                 ]
             },
         ]

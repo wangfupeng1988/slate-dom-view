@@ -9,6 +9,7 @@ import { node2Vnode } from './index'
 import { IDomEditor, DomEditor } from '../editor/dom-editor'
 import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE, NODE_TO_INDEX, NODE_TO_PARENT } from '../utils/weak-maps'
 import { getRenderFn } from './render-elements/index'
+import addTextStyle from './render-elements/addTextStyle'
 import { promiseResolveThen } from '../utils/util'
 
 interface IAttrs {
@@ -79,6 +80,12 @@ export function renderElement(elemNode: SlateElement, editor: IDomEditor): VNode
     // 添加 element 属性
     if (vnode.data == null) vnode.data = {}
     Object.assign(vnode.data, attrs)
+
+    // 添加文本相关的样式，如 text-align
+    if (!Editor.isVoid(editor, elemNode) && !editor.isInline(elemNode)) {
+        // 非 void + 非 inline
+        addTextStyle(elemNode, vnode)
+    }
 
     // 更新 element 相关的 weakMap
     promiseResolveThen(() => {

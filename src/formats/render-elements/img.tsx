@@ -7,21 +7,29 @@ import { Editor, Element as SlateElement, Node as SlateNode, Path } from 'slate'
 import { jsx, VNode } from 'snabbdom'
 import { IDomEditor } from '../../editor/dom-editor'
 
+/**
+ * 检查 node 是否是 image
+ * @param n slate node
+ */
+ function checkImage(n: SlateNode): boolean {
+    if (Editor.isEditor(n)) return false
+    if (SlateElement.isElement(n)) {
+        // @ts-ignore
+        return n.type === 'image'
+    }
+    return false
+}
+
 // 判断图片是否被选中
 // 【注意】判断是否被选中，应该统一抽离一个方法来处理？？？
 function isSelected(elemNode: SlateElement, editor: IDomEditor): boolean {
-    const { selection } = editor
-    if (selection == null) return false
+    const [match] = Editor.nodes(editor, {
+        match: checkImage
+    })
+    if (match == null) return false
 
-    const { anchor, focus } = selection
-    const isSamePath = Path.equals(anchor.path, focus.path)
-    if (!isSamePath) return false
-
-    const voidNodeEntry = Editor.void(editor, { at: anchor.path })
-    if (voidNodeEntry == null) return false
-    const [voidNode] = voidNodeEntry
-
-    if (elemNode === voidNode) return true
+    const [ n ] = match
+    if (n === elemNode) return true
 
     return false
 }

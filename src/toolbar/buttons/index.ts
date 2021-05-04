@@ -11,6 +11,10 @@ import { TOOLBAR_BUTTON_TO_EDITOR } from '../../utils/weak-maps'
 import Bold from './bold'
 import Header from './header'
 import BgColor from './bgColor'
+import Justify from './justify'
+import Link from './link'
+import Image from './img'
+import List from './list'
 
 export interface IToolButton {
     key: string
@@ -23,6 +27,12 @@ export const TOOL_BUTTON_LIST: IToolButton[] = []
 TOOL_BUTTON_LIST.push(new Bold())
 TOOL_BUTTON_LIST.push(new Header())
 TOOL_BUTTON_LIST.push(new BgColor())
+TOOL_BUTTON_LIST.push(new Justify())
+TOOL_BUTTON_LIST.push(new List('bulleted-list'))
+TOOL_BUTTON_LIST.push(new List('numbered-list'))
+TOOL_BUTTON_LIST.push(new Link())
+TOOL_BUTTON_LIST.push(new Image())
+
 
 // 获取 editor
 export function getEditorInstanceByButton(button: IToolButton): IDomEditor {
