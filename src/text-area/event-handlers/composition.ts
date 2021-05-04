@@ -15,7 +15,6 @@ export function handleCompositionStart(event: Event, textarea: TextArea, editor:
 }
 
 export function handleCompositionEnd(event: Event, textarea: TextArea, editor: IDomEditor) {
-    console.log('compositionEnd')
     if (!hasEditableTarget(editor, event.target)) return
     textarea.isComposing = false
 

@@ -90,12 +90,6 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
         // 存储相关信息
         IS_FIRST_PATCH.set(textarea, false) // 不再是第一次 patch
         TEXTAREA_TO_PATCH_FN.set(textarea, patchFn) // 存储 patch 函数
-
-        // focus
-        if (textarea.config.autoFocus) {
-            (textareaElem as HTMLElement).focus()
-        }
-
     } else {
         // 不是第一次 patch
         const curVnode = TEXTAREA_TO_VNODE.get(textarea)
@@ -105,8 +99,14 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
         patchFn(curVnode, newVnode)
     }
 
-    // 存储相关信息
     const textareaElem = document.getElementById(elemId) as HTMLElement
+
+    // focus - 无论是不是 firstPatch ，每次渲染都要判断 focus
+    if (textarea.config.autoFocus) {
+        (textareaElem as HTMLElement).focus()
+    }
+
+    // 存储相关信息
     TEXTAREA_TO_VNODE.set(textarea, newVnode) // 存储 vnode
     EDITOR_TO_ELEMENT.set(editor, textareaElem!) // 存储 editor -> elem 对应关系
     NODE_TO_ELEMENT.set(editor, textareaElem!)
