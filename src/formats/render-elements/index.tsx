@@ -10,6 +10,7 @@ import { node2Vnode } from '../index'
 
 // 引入基础的 render element conf
 import renderParagraphConf from './p'
+import { renderHeader1Conf, renderHeader2Conf, renderHeader3Conf } from './header'
 import renderImageConf from './img'
 import renderLinkConf from './link'
 import renderVideoConf from './video'
@@ -21,6 +22,9 @@ const BASIC_RENDER_ELEM_CONF: {
     [key: string]: RenderFnType
 } = {}
 BASIC_RENDER_ELEM_CONF[renderParagraphConf.type] = renderParagraphConf.renderFn
+BASIC_RENDER_ELEM_CONF[renderHeader1Conf.type] = renderHeader1Conf.renderFn
+BASIC_RENDER_ELEM_CONF[renderHeader2Conf.type] = renderHeader2Conf.renderFn
+BASIC_RENDER_ELEM_CONF[renderHeader3Conf.type] = renderHeader3Conf.renderFn
 BASIC_RENDER_ELEM_CONF[renderImageConf.type] = renderImageConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderLinkConf.type] = renderLinkConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderVideoConf.type] = renderVideoConf.renderFn

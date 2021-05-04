@@ -7,7 +7,8 @@ import { createEditor, Node } from 'slate'
 import { withHistory } from 'slate-history'
 import { withDOM } from './editor/with-dom'
 import TextArea from './text-area/TextArea'
-import { TEXTAREA_TO_EDITOR, EDITOR_TO_ON_CHANGE } from './utils/weak-maps'
+import Toolbar from './toolbar/Toolbar'
+import { TEXTAREA_TO_EDITOR, TOOLBAR_TO_EDITOR, EDITOR_TO_ON_CHANGE } from './utils/weak-maps'
 import { IConfig, genDefaultConfig } from './config/index'
 
 /**
@@ -30,14 +31,19 @@ function getConfig(userConfig: IConfig): IConfig {
     }
 }
 
+interface IDomSelectors {
+    containerId: string
+    toolbarId: string
+}
+
 /**
  * 创建 wangEditor 实例
- * @param containerId textarea container elem id
+ * @param selectors dom selectors
  * @param content initial content
  * @returns editor
  */
-function createWangEditor(containerId: string, content?: Node[], config?: IConfig) {
-    // 生成配置
+function createWangEditor(selectors: IDomSelectors, content?: Node[], config?: IConfig) {
+    const { containerId, toolbarId } = selectors
     let editorConfig = getConfig(config || {})
 
     // 创建实例
@@ -47,8 +53,10 @@ function createWangEditor(containerId: string, content?: Node[], config?: IConfi
         )
     )
     const textarea = new TextArea(containerId, editorConfig)
-    // 绑定 textarea 到 editor ，以便在 textarea 中可以访问到 editor
+    const toolbar = new Toolbar(toolbarId)
+    // 绑定关联关系，以方便查找
     TEXTAREA_TO_EDITOR.set(textarea, editor)
+    TOOLBAR_TO_EDITOR.set(toolbar, editor)
 
     // 初始化内容
     let initialContent: Node[] = content && content.length > 0
@@ -61,6 +69,9 @@ function createWangEditor(containerId: string, content?: Node[], config?: IConfi
     EDITOR_TO_ON_CHANGE.set(editor, () => {
         // 触发 textarea DOM 变化
         textarea.onEditorChange()
+
+        // 触发 toolbar DOM 变化
+        toolbar.onEditorChange()
 
         // 触发用户配置的 onchange 函数
         if (editorConfig.onChange) editorConfig.onChange()

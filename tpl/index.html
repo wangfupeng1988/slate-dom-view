@@ -24,19 +24,17 @@
         }
 
         .toolbar {
-            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .toolbar .btn-active {
+            color: blue;
+            border-color: blue;
         }
     </style>
 </head>
 <body>
-    <div id="editor-view-container">
-    </div>
-
-    <div class="toolbar">
-        <button id="btn-set-selection">set selection</button>
-        <button id="btn-insert-text">insert text</button>
-        <button id="btn-insert-break">insert break</button>
-    </div>
+    <div id="editor-toolbar" class="toolbar"></div>
+    <div id="editor-view-container"></div>
 
     <div style="margin-top: 10px;">
         <p>curSelection: <span id="span-selection"></span></p>
@@ -46,10 +44,29 @@
     <script>
         window.content = [
             {
+                type: 'header1',
+                children: [
+                    {
+                        text: "一行标题",
+                    },
+                    {
+                        text: "bold",
+                        bold: true
+                    }
+                ]
+            },
+            {
                 type: 'paragraph',
                 children: [
                     {
                         text: "hello world ~~~ ",
+                    },
+                    {
+                        text: 'background color',
+                        bgColor: 'yellow'
+                    },
+                    {
+                        text: " ",
                     },
                     {
                         type: 'link',
@@ -61,22 +78,22 @@
                     }
                 ]
             },
-            {
-                type: 'paragraph',
-                children: [
-                    {
-                        text: "abc",
-                    },
-                    {
-                        type: 'image',
-                        url: 'http://www.wangeditor.com/imgs/logo.jpeg',
-                        children: [{ text: '' }],
-                    },
-                    {
-                        text: "123",
-                    }
-                ]
-            },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         {
+            //             text: "abc",
+            //         },
+            //         {
+            //             type: 'image',
+            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+            //             children: [{ text: '' }],
+            //         },
+            //         {
+            //             text: "123",
+            //         }
+            //     ]
+            // },
             {
                 type: 'paragraph',
                 children: [

@@ -10,7 +10,11 @@ import {
     classModule,
     propsModule,
     styleModule,
-    datasetModule
+    datasetModule,
+
+    VNodeStyle,
+    Props,
+    Dataset
     // eventListenersModule
 } from "snabbdom"
 
@@ -59,16 +63,15 @@ export function normalizeVnodeData(vnode: VNode) {
             let datasetKey = key.slice(5) // 截取掉最前面的 'data-'
             datasetKey = camelCase(datasetKey) // 转为驼峰写法
  
-            if (data.dataset == null) data.dataset = {}
-            data.dataset[datasetKey] = value // 存储到 data.dataset
+            // 存储到 data.dataset
+            addVnodeDataset(vnode, { [datasetKey]: value })
  
             delete data[key] // 删掉原有的属性
             return
         }
  
-        // 其他的，都算 props
-        if (data.props == null) data.props = {}
-        data.props[key] = value // 存储到 data.props
+        // 其他的，都算 props ，存储到 props
+        addVnodeProp(vnode, { [key]: value })
  
         delete data[key] // 删掉原有的属性
     })
@@ -80,4 +83,43 @@ export function normalizeVnodeData(vnode: VNode) {
             normalizeVnodeData(child)
         })
     }
- }
+}
+
+/**
+ * 给 vnode 添加 prop
+ * @param vnode vnode
+ * @param newProp { key: val }
+ */
+export function addVnodeProp(vnode: VNode, newProp: Props) {
+    if (vnode.data == null) vnode.data = {}
+    const data = vnode.data
+    if (data.props == null) data.props = {}
+
+    Object.assign(data.props, newProp)
+}
+
+/**
+ * 给 vnode 添加 dataset
+ * @param vnode vnode
+ * @param newDataset { key: val }
+ */
+export function addVnodeDataset(vnode: VNode, newDataset: Dataset) {
+    if (vnode.data == null) vnode.data = {}
+    const data = vnode.data
+    if (data.dataset == null) data.dataset = {}
+
+    Object.assign(data.dataset, newDataset)
+}
+
+/**
+ * 给 vnode 添加样式
+ * @param vnode vnode
+ * @param newStyle { key: val }
+ */
+export function addVnodeStyle(vnode: VNode, newStyle: VNodeStyle) {
+    if (vnode.data == null) vnode.data = {}
+    const data = vnode.data
+    if (data.style == null) data.style = {}
+
+    Object.assign(data.style, newStyle)
+}

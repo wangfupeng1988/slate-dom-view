@@ -9,31 +9,38 @@ import $ from './utils/dom'
 
 // ----------------------------- 分割线 -----------------------------
 
-// @ts-ignore
-const we = createWangEditor('editor-view-container', window.content, {
-    onChange() {
-        console.log('--- editor changed ---', we)
+const editor = createWangEditor(
+    {
+        containerId: 'editor-view-container',
+        toolbarId: 'editor-toolbar'
+    },
+    // @ts-ignore
+    window.content,
+    {
+        onChange() {
+            console.log('--- editor changed ---', editor)
 
-        $('#span-selection').text(JSON.stringify(we.selection))
-        $('#text-content').val(JSON.stringify(we.children, null, 2))
-    }
-})
-
-$('#btn-set-selection').on('click', () => {
-    Transforms.select(we, {
-        anchor: {
-            path: [0, 0],
-            offset: 5
-        },
-        focus: {
-            path: [0, 0],
-            offset: 5
+            $('#span-selection').text(JSON.stringify(editor.selection))
+            $('#text-content').val(JSON.stringify(editor.children, null, 2))
         }
-    })
-})
-$('#btn-insert-text').on('click', () => {
-    we.insertText('123456')
-})
-$('#btn-insert-break').on('click', () => {
-    we.insertBreak()
-})
+    }
+)
+
+// $('#btn-set-selection').on('click', () => {
+//     Transforms.select(editor, {
+//         anchor: {
+//             path: [0, 0],
+//             offset: 5
+//         },
+//         focus: {
+//             path: [0, 0],
+//             offset: 5
+//         }
+//     })
+// })
+// $('#btn-insert-text').on('click', () => {
+//     editor.insertText('123456')
+// })
+// $('#btn-insert-break').on('click', () => {
+//     editor.insertBreak()
+// })

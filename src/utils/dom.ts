@@ -3,12 +3,16 @@
  * @author wangfupeng
  */
 
-import { $, css, append, addClass, on, focus, attr, hide, scrollTop, offset, parents, is, dataset, val, text } from 'dom7'
+import {
+  $, css, append, addClass, removeClass, on, focus,attr,
+  hide, scrollTop, offset, parents, is, dataset, val, text
+} from 'dom7'
 export { Dom7Array } from 'dom7'
 
 $.fn.css = css
 $.fn.append = append
 $.fn.addClass = addClass
+$.fn.removeClass = removeClass
 $.fn.on = on
 $.fn.focus = focus
 $.fn.attr = attr

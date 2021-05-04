@@ -7,11 +7,15 @@ import { VNode } from 'snabbdom'
 import { Node, Ancestor, Editor, Range } from 'slate'
 import { IDomEditor } from '../editor/dom-editor'
 import TextArea from '../text-area/TextArea'
+import Toolbar from '../toolbar/Toolbar'
+import { IToolButton } from '../toolbar/buttons/index'
 import { Key } from './key'
 import { PatchFn } from '../utils/vdom'
 
-// textarea - editor
+// textarea toolbar - editor
 export const TEXTAREA_TO_EDITOR = new WeakMap<TextArea, IDomEditor>()
+export const TOOLBAR_TO_EDITOR = new WeakMap<Toolbar, IDomEditor>()
+export const TOOLBAR_BUTTON_TO_EDITOR = new WeakMap<IToolButton, IDomEditor>()
 
 // vdom 相关的属性
 export const IS_FIRST_PATCH = new WeakMap<TextArea, boolean>()
