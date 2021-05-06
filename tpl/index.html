@@ -15,8 +15,8 @@
         }
         #editor-view-container [data-slate-editor] {
             outline: 0;
-            white-space: 'pre-wrap';
-            word-wrap: 'break-word';
+            white-space: pre-wrap; /* 【重要】可以显示空格，在连续多空格的情况下 */
+            word-wrap: break-word;
             padding: 0 10px;
             height: 100%;
         }
