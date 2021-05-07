@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>slate view</title>
     <style>
+        textarea {
+            outline: 0;
+        }
+
         #editor-view-container {
             border:  1px solid #ccc;
             width: 600px;
@@ -22,6 +26,15 @@
         }
         #editor-view-container [data-slate-editor] img {
             margin: 0 3px;
+        }
+        #editor-view-container [data-slate-editor] code {
+            font-family: monospace;
+            background-color: #eee;
+            padding: 3px;
+            border-radius: 3px;
+        }
+        #editor-view-container [data-slate-editor] pre>code {
+            display: block;
         }
 
         .toolbar {
@@ -60,49 +73,68 @@
             //         }
             //     ]
             // },
+
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         { text: "hello world ~~~ " },
+            //         {
+            //             text: 'background color',
+            //             bgColor: 'yellow'
+            //         },
+            //         { text: " " },
+            //         {
+            //             type: 'link',
+            //             url: 'https://www.slatejs.org/examples/links',
+            //             children: [{ text: 'slate examples' }],
+            //         },
+            //         { text: '!' }
+            //     ]
+            // },
             {
                 type: 'paragraph',
                 children: [
-                    { text: "hello world ~~~ " },
-                    {
-                        text: 'background color',
-                        bgColor: 'yellow'
-                    },
-                    { text: " " },
-                    {
-                        type: 'link',
-                        url: 'https://www.slatejs.org/examples/links',
-                        children: [{ text: 'slate examples' }],
-                    },
-                    { text: '!' }
+                    { text: 'hello ' },
+                    { text: 'world', code: true },
+                    { text: ' ~' }
                 ]
             },
             {
-                type: 'bulleted-list',
+                type: 'pre',
                 children: [
                     {
-                        type: 'list-item',
-                        children: [{ text: '张三 and 张三 and 张三' }]
-                    },
-                    {
-                        type: 'list-item',
-                        children: [{ text: '李四 and 李四 and 李四' }]
+                        type: 'code',
+                        language: 'javascript',
+                        children: [{ text: 'const a = 100;\nconsole.log(a);' }]
                     }
                 ]
             },
-            {
-                type: 'numbered-list',
-                children: [
-                    {
-                        type: 'list-item',
-                        children: [{ text: '张三 and 张三 and 张三' }]
-                    },
-                    {
-                        type: 'list-item',
-                        children: [{ text: '李四 and 李四 and 李四' }]
-                    }
-                ]
-            },
+            // {
+            //     type: 'bulleted-list',
+            //     children: [
+            //         {
+            //             type: 'list-item',
+            //             children: [{ text: '张三 and 张三 and 张三' }]
+            //         },
+            //         {
+            //             type: 'list-item',
+            //             children: [{ text: '李四 and 李四 and 李四' }]
+            //         }
+            //     ]
+            // },
+            // {
+            //     type: 'numbered-list',
+            //     children: [
+            //         {
+            //             type: 'list-item',
+            //             children: [{ text: '张三 and 张三 and 张三' }]
+            //         },
+            //         {
+            //             type: 'list-item',
+            //             children: [{ text: '李四 and 李四 and 李四' }]
+            //         }
+            //     ]
+            // },
             {
                 type: 'paragraph',
                 children: [

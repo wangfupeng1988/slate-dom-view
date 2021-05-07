@@ -29,13 +29,13 @@ function addTextVnodeStyle(node: SlateText, textVnode: VNode): VNode {
         styleVnode = <strong>{styleVnode}</strong>
     }
     if (code) {
-        styleVnode = <code>styleVnode</code>
+        styleVnode = <code>{styleVnode}</code>
     }
     if (italic) {
-        styleVnode = <em>styleVnode</em>
+        styleVnode = <em>{styleVnode}</em>
     }
     if (underline) {
-        styleVnode = <u>styleVnode</u>
+        styleVnode = <u>{styleVnode}</u>
     }
 
     return styleVnode

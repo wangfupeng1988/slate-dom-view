@@ -15,6 +15,8 @@ import Justify from './justify'
 import Link from './link'
 import Image from './img'
 import List from './list'
+import Code from './code'
+import CodeBlock from './code-block'
 
 export interface IToolButton {
     key: string
@@ -32,6 +34,8 @@ TOOL_BUTTON_LIST.push(new List('bulleted-list'))
 TOOL_BUTTON_LIST.push(new List('numbered-list'))
 TOOL_BUTTON_LIST.push(new Link())
 TOOL_BUTTON_LIST.push(new Image())
+TOOL_BUTTON_LIST.push(new Code())
+TOOL_BUTTON_LIST.push(new CodeBlock())
 
 
 // 获取 editor

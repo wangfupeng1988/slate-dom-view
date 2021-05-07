@@ -6,7 +6,7 @@
 import { Text as SlateText, Ancestor } from 'slate'
 import { jsx, VNode } from 'snabbdom'
 import { IDomEditor, DomEditor } from '../editor/dom-editor'
-import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE, NODE_TO_PARENT } from '../utils/weak-maps'
+import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE } from '../utils/weak-maps'
 import genTextVnode from './render-text/genVnode'
 import addTextVnodeStyle from './render-text/addStyle'
 import { promiseResolveThen } from '../utils/util'

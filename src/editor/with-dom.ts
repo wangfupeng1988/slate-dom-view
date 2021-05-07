@@ -5,7 +5,7 @@
 
 import { Editor, Node, Path, Operation, Transforms, Range } from 'slate'
 import { IDomEditor, DomEditor } from './dom-editor'
-import { EDITOR_TO_ON_CHANGE, NODE_TO_KEY, EDITOR_TO_CONFIG } from '../utils/weak-maps'
+import { EDITOR_TO_ON_CHANGE, NODE_TO_KEY, EDITOR_TO_CONFIG, NODE_TO_PARENT } from '../utils/weak-maps'
 import { Key } from '../utils/key'
 import { isDOMText, getPlainText } from '../utils/dom'
 import { IConfig } from '../config/index'
@@ -15,7 +15,7 @@ import { IConfig } from '../config/index'
  */
 export const withDOM = <T extends Editor>(editor: T) => {
     const e = editor as T & IDomEditor
-    const { apply, onChange, isVoid, isInline } = e
+    const { apply, onChange, isVoid, isInline, insertBreak } = e
 
     // 重写 apply 方法
     // apply 方法非常重要，它最终执行 operation https://docs.slatejs.org/concepts/05-operations
@@ -230,6 +230,61 @@ export const withDOM = <T extends Editor>(editor: T) => {
         }
 
         return isInline(elem)
+    }
+
+    // 重写 insertBreak ，自定义回车换行 —— 后面要拆分出去，每个功能单独处理？？？
+    e.insertBreak = () => {
+        // -------------------- code block --------------------
+        const [matchForCodeBlock] = Editor.nodes(e, {
+            // @ts-ignore
+            match: n => n.type === 'pre',
+            universal: true
+        })
+        if (!!matchForCodeBlock) {
+            // 命中了 pre 节点
+            const [n] = matchForCodeBlock
+            const codeStr = Node.string(n)
+            if (codeStr.slice(-2) === '\n\n') {
+                // 结尾两处空行，则跳出 pre ，插入空行
+                const emptyP = { type: 'paragraph', children: [{text: ''}] }
+                Transforms.insertNodes(editor, emptyP, {
+                    mode: 'highest' // 在最高层级插入，否则会插入到 pre 下面
+                })
+            } else {
+                e.insertText('\n') // 文本换行
+            }
+
+            return // 阻止默认的 insertBreak ，重要
+        }
+
+        // -------------------- list item --------------------
+        const [matchForListItem] = Editor.nodes(e, {
+            // @ts-ignore
+            match: n => n.type === 'list-item',
+            universal: true
+        })
+        if (!!matchForListItem) {
+            // 命中了 list-item 节点
+            const [n] = matchForListItem
+            const listNode = NODE_TO_PARENT.get(n) // 获取 list-item 的父节点，即 list 节点
+            const children = listNode?.children || []
+            const childrenLength = children.length
+            if (n === children[childrenLength - 1]) {
+                // 当前 list-item 是 list 的最后一个 child
+                const str = Node.string(n)
+                if (str === '') {
+                    // 当前 list-item 无内容。则跳出 list ，插入一个空行
+                    const emptyP = { type: 'paragraph', children: [{text: ''}] }
+                    Transforms.insertNodes(editor, emptyP, {
+                        mode: 'highest' // 在最高层级插入，否则会插入到 list 下面
+                    })
+
+                    return // 阻止默认的 insertBreak ，重要
+                }
+            }
+        }
+
+        insertBreak()
     }
 
     // 最后要返回 editor 实例 - 重要！！！
