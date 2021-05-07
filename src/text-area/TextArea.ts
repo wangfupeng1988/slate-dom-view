@@ -5,14 +5,14 @@
 
 import { throttle, forEach } from 'lodash-es'
 import $, { Dom7Array } from '../utils/dom'
-import { TEXTAREA_TO_EDITOR } from '../utils/weak-maps'
+import { TEXTAREA_TO_EDITOR, EDITOR_TO_CONFIG } from '../utils/weak-maps'
 import { IDomEditor } from '../editor/dom-editor'
 import updateView from './updateView'
-import { IConfig } from '../config/index'
 import { DOMElement } from '../utils/dom'
 import { editorSelectionToDOM, DOMSelectionToEditor } from './syncSelection'
 import { promiseResolveThen } from '../utils/util'
 import eventHandlerConf from './event-handlers/index'
+import { IConfig } from '../config/index'
 
 let ID = 1
 
@@ -20,16 +20,13 @@ class TextArea {
     id: number
     $textAreaContainer: Dom7Array
     $textArea: Dom7Array | null = null
-    config: IConfig
     isComposing: boolean = false
     isUpdatingSelection: boolean = false
     latestElement: DOMElement | null = null
 
-    constructor(textAreaContainerId: string, config: IConfig) {
+    constructor(textAreaContainerId: string) {
         // id 不能重复
         this.id = ID++
-
-        this.config = config
 
         // 初始化 dom
         const $textAreaContainer  = $(`#${textAreaContainerId}`)
@@ -45,14 +42,21 @@ class TextArea {
         )
     }
 
-    private getEditorInstance(): IDomEditor {
+    private get editorInstance(): IDomEditor {
         const editor = TEXTAREA_TO_EDITOR.get(this)
-        if (editor == null) throw new Error('Can not ge editor instance')
+        if (editor == null) throw new Error('Can not get editor instance')
         return editor
     }
 
+    public get editorConfig(): IConfig {
+        const editor = this.editorInstance
+        const config = EDITOR_TO_CONFIG.get(editor)
+        if (config == null) throw new Error('Can not get editor config')
+        return config
+    }
+
     private onDOMSelectionChange = throttle(() => {
-        const editor = this.getEditorInstance()
+        const editor = this.editorInstance
         DOMSelectionToEditor(this, editor)
     }, 100)
 
@@ -61,7 +65,7 @@ class TextArea {
      */
     private bindEvent() {
         const $textArea = this.$textArea
-        const editor = this.getEditorInstance()
+        const editor = this.editorInstance
         
         if ($textArea == null) return
 
@@ -81,7 +85,7 @@ class TextArea {
      * 感觉这里还是要考虑节流的，考虑一种方式缓存 insertText 数据 ？？？
      */
     onEditorChange() {
-        const editor = this.getEditorInstance()
+        const editor = this.editorInstance
 
         // 更新 DOM
         updateView(this, editor)

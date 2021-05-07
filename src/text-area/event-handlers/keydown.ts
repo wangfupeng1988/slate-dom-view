@@ -16,10 +16,10 @@ function preventDefault(event: Event) {
 
 function handleOnKeydown(e: Event, textarea: TextArea, editor: IDomEditor) {
     const event = e as KeyboardEvent
-    const { config } = textarea
+    const { editorConfig } = textarea
     const { selection } = editor
 
-    if (config.readOnly) return
+    if (editorConfig.readOnly) return
     if (!hasEditableTarget(editor, event.target)) return
 
     // COMPAT: Since we prevent the default behavior on

@@ -11,11 +11,15 @@ import Toolbar from '../toolbar/Toolbar'
 import { IToolButton } from '../toolbar/buttons/index'
 import { Key } from './key'
 import { PatchFn } from '../utils/vdom'
+import { IConfig } from '../config/index'
 
 // textarea toolbar - editor
 export const TEXTAREA_TO_EDITOR = new WeakMap<TextArea, IDomEditor>()
 export const TOOLBAR_TO_EDITOR = new WeakMap<Toolbar, IDomEditor>()
 export const TOOLBAR_BUTTON_TO_EDITOR = new WeakMap<IToolButton, IDomEditor>()
+
+// config
+export const EDITOR_TO_CONFIG = new WeakMap<IDomEditor, IConfig>()
 
 // vdom 相关的属性
 export const IS_FIRST_PATCH = new WeakMap<TextArea, boolean>()

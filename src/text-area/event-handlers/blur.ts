@@ -11,9 +11,9 @@ import { isDOMElement, isDOMNode } from '../../utils/dom'
 import { IS_FOCUSED } from '../../utils/weak-maps'
 
 function handleOnBlur(event: Event, textarea: TextArea, editor: IDomEditor) {
-    const { config, isUpdatingSelection, latestElement } = textarea
+    const { editorConfig, isUpdatingSelection, latestElement } = textarea
 
-    if (config.readOnly) return
+    if (editorConfig.readOnly) return
     if (isUpdatingSelection) return
     if (!hasEditableTarget(editor, event.target)) return
 

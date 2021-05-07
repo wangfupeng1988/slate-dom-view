@@ -64,9 +64,10 @@ function genRootElem(elemId: string, readOnly = false): Dom7Array {
 function updateView(textarea: TextArea, editor: IDomEditor) {
     const $textAreaContainer = textarea.$textAreaContainer
     const elemId = genElemId(textarea.id)
+    const config = editor.getConfig()
 
     // 生成 newVnode
-    const newVnode = genRootVnode(elemId, textarea.config.readOnly)
+    const newVnode = genRootVnode(elemId, config.readOnly)
     const content = editor.children || []
     newVnode.children = content.map((node, i) => {
         let vnode = node2Vnode(node, i, editor, editor)
@@ -78,7 +79,7 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
     if (isFirstPatch == null) isFirstPatch = true // 尚未赋值，也是第一次
     if (isFirstPatch) {
         // 第一次 patch ，先生成 elem
-        const $textArea = genRootElem(elemId, textarea.config.readOnly)
+        const $textArea = genRootElem(elemId, config.readOnly)
         $textAreaContainer.append($textArea)
         textarea.$textArea = $textArea // 存储下编辑区域的 DOM 节点
         const textareaElem = $textArea[0]
@@ -102,7 +103,7 @@ function updateView(textarea: TextArea, editor: IDomEditor) {
     const textareaElem = document.getElementById(elemId) as HTMLElement
 
     // focus - 无论是不是 firstPatch ，每次渲染都要判断 focus
-    if (textarea.config.autoFocus) {
+    if (config.autoFocus) {
         (textareaElem as HTMLElement).focus()
     }
 

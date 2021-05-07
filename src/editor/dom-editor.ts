@@ -4,6 +4,7 @@
  */
 
 import { Editor, Node, Path, Point, Range, Transforms, Descendant } from 'slate'
+import { IConfig } from '../config/index'
 import { Key } from '../utils/key'
 import {
   EDITOR_TO_ELEMENT,
@@ -32,6 +33,7 @@ import {
 export interface IDomEditor extends Editor {
     insertData: (data: DataTransfer) => void
     setFragmentData: (data: DataTransfer) => void
+    getConfig: () => IConfig
 }
 
 export const DomEditor = {
@@ -225,6 +227,11 @@ export const DomEditor = {
         editor.setFragmentData(data)
     },
 
+    // 获取 editor 配置信息
+    getConfig(editor: IDomEditor): IConfig {
+        return editor.getConfig()
+    },
+ 
     /**
      * Find a native DOM range from a Slate `range`.
      *

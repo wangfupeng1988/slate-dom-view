@@ -99,7 +99,8 @@ export function editorSelectionToDOM(textarea: TextArea, editor: IDomEditor): vo
  * @param editor editor
  */
 export function DOMSelectionToEditor(textarea: TextArea, editor: IDomEditor) {
-    const { config, isComposing, isUpdatingSelection } = textarea
+    const { isComposing, isUpdatingSelection } = textarea
+    const config = editor.getConfig()
     if (config.readOnly) return
     if (isComposing) return
     if (isUpdatingSelection) return

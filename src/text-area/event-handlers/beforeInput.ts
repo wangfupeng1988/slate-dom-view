@@ -21,7 +21,7 @@ interface BeforeInputEventType {
 
 function handleBeforeInput(event: Event & BeforeInputEventType, textarea: TextArea, editor: IDomEditor) {
     if (!HAS_BEFORE_INPUT_SUPPORT) return // 有些浏览器完全不支持 beforeInput ，会用 keypress 和 keydown 兼容
-    if (textarea.config.readOnly) return
+    if (textarea.editorConfig.readOnly) return
     if (!hasEditableTarget(editor, event.target)) return
 
     const { selection } = editor

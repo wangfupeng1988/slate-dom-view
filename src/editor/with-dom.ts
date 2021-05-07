@@ -5,9 +5,10 @@
 
 import { Editor, Node, Path, Operation, Transforms, Range } from 'slate'
 import { IDomEditor, DomEditor } from './dom-editor'
-import { EDITOR_TO_ON_CHANGE, NODE_TO_KEY } from '../utils/weak-maps'
+import { EDITOR_TO_ON_CHANGE, NODE_TO_KEY, EDITOR_TO_CONFIG } from '../utils/weak-maps'
 import { Key } from '../utils/key'
 import { isDOMText, getPlainText } from '../utils/dom'
+import { IConfig } from '../config/index'
 
 /**
  * `withDOM` adds DOM specific behaviors to the editor.
@@ -182,6 +183,13 @@ export const withDOM = <T extends Editor>(editor: T) => {
 
         // TODO data.files 拖拽上传图片，可参考 https://github.com/ianstormtaylor/slate/blob/main/site/examples/images.tsx
     }
+
+    // 获取 editor 配置信息
+    e.getConfig = (): IConfig => {
+        const config = EDITOR_TO_CONFIG.get(e)
+        if (config == null) throw new Error('Can not get editor config')
+        return config
+    },
 
     // 重写 onchange API
     e.onChange = () => {

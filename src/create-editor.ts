@@ -8,8 +8,8 @@ import { withHistory } from 'slate-history'
 import { withDOM } from './editor/with-dom'
 import TextArea from './text-area/TextArea'
 import Toolbar from './toolbar/Toolbar'
-import { TEXTAREA_TO_EDITOR, TOOLBAR_TO_EDITOR, EDITOR_TO_ON_CHANGE } from './utils/weak-maps'
-import { IConfig, genDefaultConfig } from './config/index'
+import { TEXTAREA_TO_EDITOR, TOOLBAR_TO_EDITOR, EDITOR_TO_ON_CHANGE, EDITOR_TO_CONFIG } from './utils/weak-maps'
+import { IConfig, genConfig } from './config/index'
 
 /**
  * 获取默认的初始化内容
@@ -21,14 +21,6 @@ function genDefaultInitialContent() {
             children: [ { text: '' } ]
         }
     ]
-}
-
-function getConfig(userConfig: IConfig): IConfig {
-    const defaultConfig = genDefaultConfig()
-    return {
-        ...defaultConfig,
-        ...userConfig
-    }
 }
 
 interface IDomSelectors {
@@ -44,7 +36,7 @@ interface IDomSelectors {
  */
 function createWangEditor(selectors: IDomSelectors, content?: Node[], config?: IConfig) {
     const { containerId, toolbarId } = selectors
-    let editorConfig = getConfig(config || {})
+    let editorConfig = genConfig(config || {})
 
     // 创建实例
     const editor = withHistory(
@@ -52,11 +44,12 @@ function createWangEditor(selectors: IDomSelectors, content?: Node[], config?: I
             createEditor()
         )
     )
-    const textarea = new TextArea(containerId, editorConfig)
+    const textarea = new TextArea(containerId)
     const toolbar = new Toolbar(toolbarId)
     // 绑定关联关系，以方便查找
     TEXTAREA_TO_EDITOR.set(textarea, editor)
     TOOLBAR_TO_EDITOR.set(toolbar, editor)
+    EDITOR_TO_CONFIG.set(editor, editorConfig)
 
     // 初始化内容
     let initialContent: Node[] = content && content.length > 0
