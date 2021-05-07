@@ -26,8 +26,10 @@ const renderCodeConf = {
     type: 'code',
     renderFn(elemNode: SlateElement, editor: IDomEditor): VNode {
         // @ts-ignore
-        const { language, children = [] } = elemNode
-        const vnode = <code className={`language-${language}`}>
+        const { children = [] } = elemNode
+
+        // 【注意】渲染 <code> 时不要加 className={`language-${language}`} ，否则 Prism 会自动开启渲染
+        const vnode = <code>
             {children.map((child: Node, index: number) => {
                 return node2Vnode(child, index, elemNode, editor)
             })}

@@ -7,6 +7,8 @@ import { Transforms } from 'slate'
 import createWangEditor from './create-editor'
 import $ from './utils/dom'
 
+import codeHighLightingDecorate from './code-highlighting/decorate'
+
 // ----------------------------- 分割线 -----------------------------
 
 const editor = createWangEditor(
@@ -16,13 +18,16 @@ const editor = createWangEditor(
     },
     // @ts-ignore
     window.content,
+
+    // 配置
     {
         onChange() {
             // console.log('--- editor changed ---', editor)
 
             $('#span-selection').text(JSON.stringify(editor.selection))
             $('#text-content').val(JSON.stringify(editor.children, null, 2))
-        }
+        },
+        decorate: codeHighLightingDecorate
     }
 )
 
