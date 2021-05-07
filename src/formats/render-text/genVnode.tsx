@@ -24,8 +24,14 @@ function zeroWidthStr(length = 0, isLineBreak = false): VNode {
     </span>
 }
 
-function genTextVnode(textNode: SlateText, parent: Ancestor, editor: IDomEditor): VNode {
-    const { text } = textNode
+function genTextVnode(
+    leafNode: SlateText,
+    isLast: boolean = false,
+    textNode: SlateText,
+    parent: Ancestor,
+    editor: IDomEditor
+): VNode {
+    const { text } = leafNode
     const path = DomEditor.findPath(editor, textNode)
     const parentPath = Path.parent(path)
 
@@ -56,7 +62,7 @@ function genTextVnode(textNode: SlateText, parent: Ancestor, editor: IDomEditor)
 
     // COMPAT: Browsers will collapse trailing new lines at the end of blocks,
     // so we need to add an extra trailing new lines to prevent that.
-    if (text.slice(-1) === '\n') {
+    if (isLast && text.slice(-1) === '\n') {
         return str(text, true)
     }
 

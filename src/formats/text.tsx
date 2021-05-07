@@ -6,7 +6,7 @@
 import { Text as SlateText, Ancestor } from 'slate'
 import { jsx, VNode } from 'snabbdom'
 import { IDomEditor, DomEditor } from '../editor/dom-editor'
-import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE } from '../utils/weak-maps'
+import { KEY_TO_ELEMENT, NODE_TO_ELEMENT, ELEMENT_TO_NODE, NODE_TO_PARENT } from '../utils/weak-maps'
 import genTextVnode from './render-text/genVnode'
 import addTextVnodeStyle from './render-text/addStyle'
 import { promiseResolveThen } from '../utils/util'
@@ -15,16 +15,29 @@ function renderText(textNode: SlateText, parent: Ancestor, editor: IDomEditor): 
     if (textNode.text == null) throw new Error(`Current node is not slate Text ${JSON.stringify(textNode)}`)
     const key = DomEditor.findKey(editor, textNode)
 
-    // 文字和样式
-    let strVnode = genTextVnode(textNode, parent, editor)
-    strVnode = addTextVnodeStyle(textNode, strVnode)
+    // 根据 decorate 将 text 拆分为多个叶子节点 text[]
+    const { decorate } = editor.getConfig()
+    if (decorate == null) throw new Error(`Can not get config.decorate`)
+    const path = DomEditor.findPath(editor, textNode)
+    const ds = decorate([textNode, path])
+    const leaves = SlateText.decorations(textNode, ds)
+
+    // 生成 leaves vnode
+    const leavesVnode = leaves.map((leafNode, index) => {
+        // 文字和样式
+        const isLast = index === leaves.length - 1
+        let strVnode = genTextVnode(leafNode, isLast, textNode, parent, editor)
+        strVnode = addTextVnodeStyle(textNode, strVnode)
+        // 生成每一个 leaf 节点
+        return <span data-slate-leaf>
+            {strVnode}
+        </span>
+    })
 
     // 生成 text vnode
     const textId = `w-e-text-${key.id}`
     const vnode = <span data-slate-node="text" id={textId} key={key.id}>
-        <span data-slate-leaf>
-            {strVnode}
-        </span>
+        {leavesVnode /* 一个 text 可能包含多个 leaf */}
     </span>
 
     // 更新 weak-map

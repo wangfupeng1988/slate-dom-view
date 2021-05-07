@@ -21,7 +21,7 @@ import { IDomEditor } from '../../editor/dom-editor'
 }
 
 // 判断图片是否被选中
-// 【注意】判断是否被选中，应该统一抽离一个方法来处理？？？
+// 【注意】判断是否被选中，应该统一抽离一个方法来处理？？？—— 可参考 slate-react Children.tsx 中 `selection={sel}` sel 的计算
 function isSelected(elemNode: SlateElement, editor: IDomEditor): boolean {
     const [match] = Editor.nodes(editor, {
         match: checkImage

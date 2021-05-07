@@ -18,7 +18,7 @@ const editor = createWangEditor(
     window.content,
     {
         onChange() {
-            console.log('--- editor changed ---', editor)
+            // console.log('--- editor changed ---', editor)
 
             $('#span-selection').text(JSON.stringify(editor.selection))
             $('#text-content').val(JSON.stringify(editor.children, null, 2))
