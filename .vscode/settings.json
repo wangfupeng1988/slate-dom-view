@@ -4,6 +4,7 @@
         "compositionend",
         "compositionstart",
         "contenteditable",
+        "katex",
         "snabbdom",
         "vdom",
         "vnode",

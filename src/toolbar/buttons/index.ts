@@ -18,6 +18,7 @@ import Mention from './mention'
 import List from './list'
 import Code from './code'
 import CodeBlock from './code-block'
+import Formula from './formula'
 
 import Table from './table/table'
 import InsertRow from './table/insert-row'
@@ -44,6 +45,7 @@ TOOL_BUTTON_LIST.push(new Image())
 TOOL_BUTTON_LIST.push(new Mention())
 TOOL_BUTTON_LIST.push(new Code())
 TOOL_BUTTON_LIST.push(new CodeBlock())
+TOOL_BUTTON_LIST.push(new Formula())
 
 TOOL_BUTTON_LIST.push(new Table())
 TOOL_BUTTON_LIST.push(new InsertRow())

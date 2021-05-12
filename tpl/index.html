@@ -102,14 +102,21 @@
                     { text: '!' }
                 ]
             },
-            // {
-            //     type: 'paragraph',
-            //     children: [
-            //         { text: 'hello ' },
-            //         { text: 'world', code: true },
-            //         { text: ' ~' }
-            //     ]
-            // },
+            {
+                type: 'paragraph',
+                children: [
+                    { text: 'hello ' },
+                    {
+                        type: 'formula',
+                        // LaTeX 语法
+                        value: 'f(x) = a+b',
+                        children: [{ text: '' }]
+                    },
+                    { text: ' ' },
+                    { text: 'world', code: true },
+                    { text: ' ~' }
+                ]
+            },
             // {
             //     type: 'pre',
             //     children: [
@@ -157,18 +164,18 @@
             //         { text: " text." }
             //     ]
             // },
-            {
-                type: 'paragraph',
-                children: [
-                    { text: "abc" },
-                    {
-                        type: 'image',
-                        url: 'http://www.wangeditor.com/imgs/logo.jpeg',
-                        children: [{ text: '' }],
-                    },
-                    { text: "123" }
-                ]
-            },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         { text: "abc" },
+            //         {
+            //             type: 'image',
+            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+            //             children: [{ text: '' }],
+            //         },
+            //         { text: "123" }
+            //     ]
+            // },
             // {
             //     type: 'video',
             //     url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',

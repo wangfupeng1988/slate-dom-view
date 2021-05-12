@@ -25,7 +25,18 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader']  // 增加 'less-loader' ，注意顺序
-            }
+            },
+            {
+                test: /\.(woff2?|ttf|eot|otf)(\?.*)?$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 500 * 1024, // <=500kb 则使用 base64 （即，希望字体文件一直使用 base64 ，而不单独打包）
+                        },
+                    },
+                ],
+            },
         ]
     },
     resolve: {

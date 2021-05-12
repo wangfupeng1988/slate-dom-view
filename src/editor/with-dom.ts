@@ -221,6 +221,9 @@ export const withDOM = <T extends Editor>(editor: T) => {
         if (type === 'mention') {
             return true
         }
+        if (type === 'formula') {
+            return true
+        }
 
         return isVoid(elem)
     }
@@ -237,6 +240,9 @@ export const withDOM = <T extends Editor>(editor: T) => {
             return true
         }
         if (type === 'mention') {
+            return true
+        }
+        if (type === 'formula') {
             return true
         }
 

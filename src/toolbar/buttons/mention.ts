@@ -34,9 +34,9 @@ class Mention implements IToolButton {
 
     private onClick() {
         const editor = getEditorInstanceByButton(this)
-        const isImage = this.isMention
+        const isMention = this.isMention
 
-        if (isImage) return // 当前选中图片，不再处理
+        if (isMention) return // 当前选中，不再处理
 
         const content = prompt('')
         const { selection } = editor
