@@ -85,23 +85,23 @@
             //     ]
             // },
 
-            // {
-            //     type: 'paragraph',
-            //     children: [
-            //         { text: "hello world ~~~ " },
-            //         {
-            //             text: 'background color',
-            //             bgColor: 'yellow'
-            //         },
-            //         { text: " " },
-            //         {
-            //             type: 'link',
-            //             url: 'https://www.slatejs.org/examples/links',
-            //             children: [{ text: 'slate examples' }],
-            //         },
-            //         { text: '!' }
-            //     ]
-            // },
+            {
+                type: 'paragraph',
+                children: [
+                    { text: "hello world ~~~ " },
+                    {
+                        text: 'background color',
+                        bgColor: 'yellow'
+                    },
+                    { text: " " },
+                    {
+                        type: 'link',
+                        url: 'https://www.slatejs.org/examples/links',
+                        children: [{ text: 'slate examples' }],
+                    },
+                    { text: '!' }
+                ]
+            },
             // {
             //     type: 'paragraph',
             //     children: [
@@ -146,69 +146,73 @@
             //         }
             //     ]
             // },
-            {
-                type: 'paragraph',
-                children: [
-                    { text: "this is " },
-                    {
-                        text: "bold",
-                        bold: true
-                    },
-                    { text: " text." }
-                ]
-            },
             // {
             //     type: 'paragraph',
             //     children: [
-            //         { text: "abc" },
+            //         { text: "this is " },
             //         {
-            //             type: 'image',
-            //             url: 'http://www.wangeditor.com/imgs/logo.jpeg',
-            //             children: [{ text: '' }],
+            //             text: "bold",
+            //             bold: true
             //         },
-            //         { text: "123" }
+            //         { text: " text." }
             //     ]
             // },
+            {
+                type: 'paragraph',
+                children: [
+                    { text: "abc" },
+                    {
+                        type: 'image',
+                        url: 'http://www.wangeditor.com/imgs/logo.jpeg',
+                        children: [{ text: '' }],
+                    },
+                    { text: "123" }
+                ]
+            },
             // {
             //     type: 'video',
             //     url: 'http://106.55.153.217:8881/server/upload-files/movie-1-uz9.mp4',
             //     children: [{ text: '' }],
             // },
-            {
-                type: 'table',
-                children: [
-                    {
-                        type: 'table-row',
-                        children: [
-                            {
-                                type: 'table-cell',
-                                children: [{ text: 'aaa' }]
-                            },
-                            {
-                                type: 'table-cell',
-                                children: [{ text: 'bbb' }]
-                            }
-                        ]
-                    },
-                    {
-                        type: 'table-row',
-                        children: [
-                            {
-                                type: 'table-cell',
-                                children: [{ text: 'ccc' }]
-                            },
-                            {
-                                type: 'table-cell',
-                                children: [{ text: 'ddd' }]
-                            }
-                        ]
-                    }
-                ]
-            },
+            // {
+            //     type: 'table',
+            //     children: [
+            //         {
+            //             type: 'table-row',
+            //             children: [
+            //                 {
+            //                     type: 'table-cell',
+            //                     children: [{ text: 'aaa' }]
+            //                 },
+            //                 {
+            //                     type: 'table-cell',
+            //                     children: [{ text: 'bbb' }]
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             type: 'table-row',
+            //             children: [
+            //                 {
+            //                     type: 'table-cell',
+            //                     children: [{ text: 'ccc' }]
+            //                 },
+            //                 {
+            //                     type: 'table-cell',
+            //                     children: [{ text: 'ddd' }]
+            //                 }
+            //             ]
+            //         }
+            //     ]
+            // },
             {
                 type: 'paragraph',
                 children: [
-                    { text: "The end." }
+                    { text: "测试" },
+                    { type: 'mention', content: 'wangfupeng', children: [{ text: '' }] },
+                    { text: "一行文字" },
+                    { type: 'mention', content: 'zhangsan', children: [{ text: '' }] },
+                    { text: "The end." },
                 ]
             }
         ]

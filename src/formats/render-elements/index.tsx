@@ -14,6 +14,7 @@ import { renderHeader1Conf, renderHeader2Conf, renderHeader3Conf } from './heade
 import renderImageConf from './img'
 import renderLinkConf from './link'
 import renderVideoConf from './video'
+import renderMentionConf from './mention'
 import { renderBulletedListConf, renderNumberedListConf, renderListItemConf } from './list'
 import { renderPreConf, renderCodeConf } from './code-block'
 import { renderTableConf, renderTrConf, renderTdConf } from './table'
@@ -30,6 +31,7 @@ BASIC_RENDER_ELEM_CONF[renderHeader2Conf.type] = renderHeader2Conf.renderFn
 BASIC_RENDER_ELEM_CONF[renderHeader3Conf.type] = renderHeader3Conf.renderFn
 BASIC_RENDER_ELEM_CONF[renderImageConf.type] = renderImageConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderLinkConf.type] = renderLinkConf.renderFn
+BASIC_RENDER_ELEM_CONF[renderMentionConf.type] = renderMentionConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderVideoConf.type] = renderVideoConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderBulletedListConf.type] = renderBulletedListConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderNumberedListConf.type] = renderNumberedListConf.renderFn

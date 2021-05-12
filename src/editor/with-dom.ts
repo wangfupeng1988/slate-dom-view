@@ -218,6 +218,9 @@ export const withDOM = <T extends Editor>(editor: T) => {
         if (type === 'video') {
             return true
         }
+        if (type === 'mention') {
+            return true
+        }
 
         return isVoid(elem)
     }
@@ -231,6 +234,9 @@ export const withDOM = <T extends Editor>(editor: T) => {
             return true
         }
         if (type === 'link') {
+            return true
+        }
+        if (type === 'mention') {
             return true
         }
 
