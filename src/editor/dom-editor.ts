@@ -36,6 +36,7 @@ export interface IDomEditor extends Editor {
     insertData: (data: DataTransfer) => void
     setFragmentData: (data: DataTransfer) => void
     getConfig: () => IConfig
+    handleTab: () => void
 }
 
 export const DomEditor = {

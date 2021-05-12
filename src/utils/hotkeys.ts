@@ -27,6 +27,7 @@ const HOTKEYS: KEYS = {
   italic: 'mod+i',
   splitBlock: 'shift?+enter',
   undo: 'mod+z',
+  tab: 'tab'
 }
 
 const APPLE_HOTKEYS: KEYS = {
@@ -98,4 +99,5 @@ export default {
   isSplitBlock: create('splitBlock'),
   isTransposeCharacter: create('transposeCharacter'),
   isUndo: create('undo'),
+  isTab: create('tab')
 }

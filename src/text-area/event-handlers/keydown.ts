@@ -22,6 +22,13 @@ function handleOnKeydown(e: Event, textarea: TextArea, editor: IDomEditor) {
     if (editorConfig.readOnly) return
     if (!hasEditableTarget(editor, event.target)) return
 
+    // tab
+    if (Hotkeys.isTab(event)) {
+        preventDefault(event)
+        editor.handleTab()
+        return
+    }
+
     // COMPAT: Since we prevent the default behavior on
     // `beforeinput` events, the browser doesn't think there's ever
     // any history stack to undo or redo, so we have to manage these

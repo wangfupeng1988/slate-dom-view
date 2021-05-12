@@ -191,6 +191,11 @@ export const withDOM = <T extends Editor>(editor: T) => {
         return config
     },
 
+    // tab
+    e.handleTab = () => {
+        e.insertText('    ')
+    },
+
     // 重写 onchange API
     e.onChange = () => {
         // 触发配置的 onchange 事件
