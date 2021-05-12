@@ -11,6 +11,7 @@ import TextArea from './TextArea'
 import { EDITOR_TO_ELEMENT, IS_FOCUSED } from '../utils/weak-maps'
 import { IS_FIREFOX } from '../utils/ua'
 import { hasEditableTarget, isTargetInsideVoid } from './helpers'
+import { DOMElement } from '../utils/dom'
 
 /**
  * editor onchange 时，将 editor selection 同步给 DOM
@@ -48,7 +49,31 @@ export function editorSelectionToDOM(textarea: TextArea, editor: IDomEditor): vo
         selection &&
         Range.equals(DomEditor.toSlateRange(editor, domSelection), selection)
     ) {
-        return
+        let canReturn = true
+
+        // 选区在 table 时，需要特殊处理
+        if (Range.isCollapsed(selection)) {
+            const { anchorNode, anchorOffset } = domSelection
+            if (anchorNode === editorElement) {
+                const childNodes = editorElement.childNodes
+                let tableElem
+
+                // 光标在 table 前面时
+                tableElem = childNodes[anchorOffset] as DOMElement
+                if (tableElem && tableElem.matches('table')) {
+                    canReturn = false // 不能就此结束，需要重置光标
+                }
+
+                // 光标在 table 后面时
+                tableElem = childNodes[anchorOffset - 1] as DOMElement
+                if (tableElem && tableElem.matches('table')) {
+                    canReturn = false // 不能就此结束，需要重置光标
+                }
+            }
+        }
+
+        // 其他情况，就此结束
+        if (canReturn) return
     }
 
     // Otherwise the DOM selection is out of sync, so update it.

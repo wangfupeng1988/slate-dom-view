@@ -4,7 +4,7 @@
  */
 
 import { VNode } from 'snabbdom'
-import { Node, Ancestor, Editor, Range } from 'slate'
+import { Node, Ancestor, Editor, Path } from 'slate'
 import { IDomEditor } from '../editor/dom-editor'
 import TextArea from '../text-area/TextArea'
 import Toolbar from '../toolbar/Toolbar'
@@ -62,3 +62,7 @@ export const EDITOR_TO_ON_CHANGE = new WeakMap<Editor, () => void>()
  * Symbols.
  */
 export const PLACEHOLDER_SYMBOL = (Symbol('placeholder') as unknown) as string
+
+// 正在更新，但尚未更新完的节点 path ，临时记录下
+// 例如，table 插入 col ，需要一行一行的插入，在更新期间，不能收到其他的（如 normalize）干扰
+export const CHANGING_NODE_PATH: WeakMap<Editor, Path> = new WeakMap()

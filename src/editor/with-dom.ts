@@ -3,9 +3,9 @@
  * @author wangfupeng
  */
 
-import { Editor, Node, Path, Operation, Transforms, Range } from 'slate'
+import { Editor, Node, Path, Operation, Transforms, Range, Point, Element, Ancestor } from 'slate'
 import { IDomEditor, DomEditor } from './dom-editor'
-import { EDITOR_TO_ON_CHANGE, NODE_TO_KEY, EDITOR_TO_CONFIG, NODE_TO_PARENT } from '../utils/weak-maps'
+import { EDITOR_TO_ON_CHANGE, NODE_TO_KEY, EDITOR_TO_CONFIG, NODE_TO_PARENT, NODE_TO_INDEX } from '../utils/weak-maps'
 import { Key } from '../utils/key'
 import { isDOMText, getPlainText } from '../utils/dom'
 import { IConfig } from '../config/index'
@@ -15,7 +15,7 @@ import { IConfig } from '../config/index'
  */
 export const withDOM = <T extends Editor>(editor: T) => {
     const e = editor as T & IDomEditor
-    const { apply, onChange, isVoid, isInline, insertBreak } = e
+    const { apply, onChange, isVoid, isInline, insertBreak, deleteBackward, deleteForward, normalizeNode } = e
 
     // 重写 apply 方法
     // apply 方法非常重要，它最终执行 operation https://docs.slatejs.org/concepts/05-operations
@@ -284,7 +284,133 @@ export const withDOM = <T extends Editor>(editor: T) => {
             }
         }
 
+        // -------------------- table --------------------
+        const { selection } = e
+        if (selection) {
+            const [table] = Editor.nodes(editor, {
+                // @ts-ignore
+                match: n => n.type === 'table'
+            })
+
+            if (table) {
+                // 表格之内，换行
+                e.insertText('\n')
+
+                return // 阻止默认的 insertBreak ，重要
+            }
+        }
+
         insertBreak()
+    }
+
+    e.deleteBackward = unit => {
+        // ---------------- table ----------------
+        const { selection } = editor
+        if (selection && Range.isCollapsed(selection)) {
+            const [cell] = Editor.nodes(editor, {
+                // @ts-ignore
+                match: n => n.type === 'table-cell',
+            })
+            if (cell) {
+                const [, cellPath] = cell
+                const start = Editor.start(editor, cellPath)
+
+                if (Point.equals(selection.anchor, start)) {
+                    return // 阻止删除 td
+                }
+            }
+        }
+
+        deleteBackward(unit)
+    }
+
+    e.deleteForward = unit => {
+        // ---------------- table ----------------
+        // 参考 e.deleteBackward 和 table example
+
+        deleteForward(unit)
+    }
+
+    e.normalizeNode = ([node, path]) => {
+        // @ts-ignore
+        const { type, children = [] } = node
+
+        // ----------------- table 不能是最后一个节点，否则就在下面增加一个空行 -----------------
+        const topLevelNodes = e.children || []
+        const topLevelNodesLength = topLevelNodes.length
+        if (type === 'table' && topLevelNodes[topLevelNodesLength - 1] === node) {
+            // 编辑器最后的一个 node 是 table ，则增加一个空行
+            const p = { type: 'paragraph', children: [{ text: '' }] }
+            const insertPath = [ path[0] + 1 ]
+            Transforms.insertNodes(e, p, {
+                at: insertPath // 在表格后面插入
+            })
+        }
+
+        // ----------------- table 后面不能紧跟着 table -----------------
+        if (type === 'table') {
+            const nextPath = Path.next(path)
+            const [ nextNode ] = Editor.node(editor, nextPath, { depth: 1 }) // 找到 table node 的下一个节点
+            // @ts-ignore
+            if (nextNode.type === 'table') {
+                // 两个 table 之间插入一个空行
+                const p = { type: 'paragraph', children: [{ text: '' }] }
+                Transforms.insertNodes(e, p, {
+                    at: nextPath
+                })
+            }
+        }
+
+        // ----------------- table 检查 tr td 格式，保证 table 结构正确 -----------------
+        if (type === 'table') {
+            // 如果当前表格正在更新中（如插入 col ，需要一行一行插入，执行很多步 transform），忽略该操作
+            const changing = DomEditor.isChangingPath(e, path)
+            if (!changing) {
+                const rows = children
+
+                // 获取表格最多有多少列（表格结构乱掉之后，每一列数量不一样多）
+                let maxColNum = 0
+                rows.forEach((rowNode: Element) => {
+                    const cellList = rowNode.children || []
+                    const l = cellList.length
+                    if (maxColNum < l) maxColNum = l // 【注意】这里没有考虑到 colSpan 和单元格合并
+                })
+
+                // 遍历每一行，修整
+                rows.forEach((rowNode: Element, index: number) => {
+                    const cellList = rowNode.children || []
+                    const rowPath = path.concat(index) // 当前 tr 的 path
+
+                    // 如果当前行，缺失 cell ，则补充
+                    if (cellList.length < maxColNum) {
+                        for (let i = cellList.length; i < maxColNum; i++) {
+                            const cellPath = rowPath.concat(i) // cell path
+                            const newCell = { type: 'table-cell', children: [{ text: '' }] }
+                            Transforms.insertNodes(editor, newCell, {
+                                at: cellPath
+                            })
+                        }
+                    }
+
+                    // 遍历每一个 cell ，修整
+                    cellList.forEach((cellNode, i) => {
+                        // @ts-ignore
+                        if (cellNode.type !== 'table-cell') {
+                            const cellPath = rowPath.concat(i) // cell path
+                            Transforms.setNodes(editor, {
+                                // @ts-ignore
+                                type: 'table-cell',
+                            }, {
+                                at: cellPath
+                            })
+                        }
+                    })
+                })
+            }
+        }
+
+        // 最后要执行默认的 normalize
+        return normalizeNode([node, path])
     }
 
     // 最后要返回 editor 实例 - 重要！！！

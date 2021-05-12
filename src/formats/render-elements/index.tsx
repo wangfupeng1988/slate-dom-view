@@ -16,6 +16,7 @@ import renderLinkConf from './link'
 import renderVideoConf from './video'
 import { renderBulletedListConf, renderNumberedListConf, renderListItemConf } from './list'
 import { renderPreConf, renderCodeConf } from './code-block'
+import { renderTableConf, renderTrConf, renderTdConf } from './table'
 
 type RenderFnType = (elemNode: SlateElement, editor: IDomEditor) => VNode
 
@@ -35,6 +36,9 @@ BASIC_RENDER_ELEM_CONF[renderNumberedListConf.type] = renderNumberedListConf.ren
 BASIC_RENDER_ELEM_CONF[renderListItemConf.type] = renderListItemConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderPreConf.type] = renderPreConf.renderFn
 BASIC_RENDER_ELEM_CONF[renderCodeConf.type] = renderCodeConf.renderFn
+BASIC_RENDER_ELEM_CONF[renderTableConf.type] = renderTableConf.renderFn
+BASIC_RENDER_ELEM_CONF[renderTrConf.type] = renderTrConf.renderFn
+BASIC_RENDER_ELEM_CONF[renderTdConf.type] = renderTdConf.renderFn
 
 // 默认的渲染函数，匹配不到任何 type 时，就用默认的
 function defaultRender(elemNode: SlateElement, editor: IDomEditor): VNode {

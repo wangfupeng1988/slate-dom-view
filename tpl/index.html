@@ -38,6 +38,14 @@
             background-color: #fff;
             border: 1px solid #ccc;
         }
+        #editor-view-container [data-slate-editor] table {
+            border-collapse: collapse;
+        }
+        #editor-view-container [data-slate-editor] table td {
+            border: 1px solid #ccc;
+            padding: 3px 5px;
+            width: 50px;
+        }
 
         .toolbar {
             margin-bottom: 10px;
@@ -94,24 +102,24 @@
             //         { text: '!' }
             //     ]
             // },
-            {
-                type: 'paragraph',
-                children: [
-                    { text: 'hello ' },
-                    { text: 'world', code: true },
-                    { text: ' ~' }
-                ]
-            },
-            {
-                type: 'pre',
-                children: [
-                    {
-                        type: 'code',
-                        language: 'javascript',
-                        children: [{ text: 'const a = 100;\nconsole.log(a);' }]
-                    }
-                ]
-            },
+            // {
+            //     type: 'paragraph',
+            //     children: [
+            //         { text: 'hello ' },
+            //         { text: 'world', code: true },
+            //         { text: ' ~' }
+            //     ]
+            // },
+            // {
+            //     type: 'pre',
+            //     children: [
+            //         {
+            //             type: 'code',
+            //             language: 'javascript',
+            //             children: [{ text: 'const a = 100;\nconsole.log(a);' }]
+            //         }
+            //     ]
+            // },
             // {
             //     type: 'bulleted-list',
             //     children: [
@@ -167,11 +175,42 @@
             //     children: [{ text: '' }],
             // },
             {
+                type: 'table',
+                children: [
+                    {
+                        type: 'table-row',
+                        children: [
+                            {
+                                type: 'table-cell',
+                                children: [{ text: 'aaa' }]
+                            },
+                            {
+                                type: 'table-cell',
+                                children: [{ text: 'bbb' }]
+                            }
+                        ]
+                    },
+                    {
+                        type: 'table-row',
+                        children: [
+                            {
+                                type: 'table-cell',
+                                children: [{ text: 'ccc' }]
+                            },
+                            {
+                                type: 'table-cell',
+                                children: [{ text: 'ddd' }]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 type: 'paragraph',
                 children: [
                     { text: "The end." }
                 ]
-            },
+            }
         ]
     </script>
 </body>

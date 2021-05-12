@@ -5,7 +5,8 @@
 
 import {
   $, css, append, addClass, removeClass, on, focus,attr,
-  hide, scrollTop, offset, parents, is, dataset, val, text
+  hide, scrollTop, offset, parents, is, dataset, val, text,
+  removeAttr
 } from 'dom7'
 export { Dom7Array } from 'dom7'
 
@@ -16,6 +17,7 @@ $.fn.removeClass = removeClass
 $.fn.on = on
 $.fn.focus = focus
 $.fn.attr = attr
+$.fn.removeAttr = removeAttr
 $.fn.hide = hide
 $.fn.scrollTop = scrollTop
 $.fn.offset = offset

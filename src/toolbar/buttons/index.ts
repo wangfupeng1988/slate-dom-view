@@ -18,6 +18,12 @@ import List from './list'
 import Code from './code'
 import CodeBlock from './code-block'
 
+import Table from './table/table'
+import InsertRow from './table/insert-row'
+import DeleteRow from './table/del-row'
+import InsertCol from './table/insert-col'
+import DeleteCol from './table/del-col'
+
 export interface IToolButton {
     key: string
     $elem: Dom7Array
@@ -36,6 +42,12 @@ TOOL_BUTTON_LIST.push(new Link())
 TOOL_BUTTON_LIST.push(new Image())
 TOOL_BUTTON_LIST.push(new Code())
 TOOL_BUTTON_LIST.push(new CodeBlock())
+
+TOOL_BUTTON_LIST.push(new Table())
+TOOL_BUTTON_LIST.push(new InsertRow())
+TOOL_BUTTON_LIST.push(new DeleteRow())
+TOOL_BUTTON_LIST.push(new InsertCol())
+TOOL_BUTTON_LIST.push(new DeleteCol())
 
 
 // 获取 editor

@@ -3,7 +3,8 @@
  * @author wangfupeng
  */
 
-import { Editor, Node, Path, Point, Range, Transforms, Descendant } from 'slate'
+import { isEqual } from 'lodash-es'
+import { Editor, Node, Path, Point, Range, Transforms, Ancestor } from 'slate'
 import { IConfig } from '../config/index'
 import { Key } from '../utils/key'
 import {
@@ -15,6 +16,7 @@ import {
   NODE_TO_INDEX,
   NODE_TO_KEY,
   NODE_TO_PARENT,
+  CHANGING_NODE_PATH
 } from '../utils/weak-maps'
 import {
   DOMElement,
@@ -90,6 +92,15 @@ export const DomEditor = {
         throw new Error(
             `Unable to find the path for Slate node: ${JSON.stringify(node)}`
         )
+    },
+
+    /**
+     * 获取父节点
+     * @param editor editor
+     * @param node cur node
+     */
+    getParentNode(editor: IDomEditor, node: Node): Ancestor | null {
+        return NODE_TO_PARENT.get(node) || null
     },
 
     /**
@@ -532,5 +543,17 @@ export const DomEditor = {
         const slateNode = DomEditor.toSlateNode(editor, textNode!)
         const path = DomEditor.findPath(editor, slateNode)
         return { path, offset }
+    },
+
+    // 临时记录当前正在发生变化的 node path
+    recordChangingPath(editor: IDomEditor, path: Path) {
+        CHANGING_NODE_PATH.set(editor, path)
+    },
+    deleteChangingPath(editor: IDomEditor) {
+        CHANGING_NODE_PATH.delete(editor)
+    },
+    isChangingPath(editor: IDomEditor, path: Path): boolean {
+        const curPath = CHANGING_NODE_PATH.get(editor) || []
+        return isEqual(curPath, path)
     }
 }
