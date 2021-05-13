@@ -3,7 +3,7 @@
  * @author wangfupeng
  */
 
-import { Editor } from 'slate'
+import { Editor, Range } from 'slate'
 import { IDomEditor } from '../../editor/dom-editor'
 import TextArea from '../TextArea'
 import { hasEditableTarget } from '../helpers'
@@ -12,8 +12,11 @@ import { hasEditableTarget } from '../helpers'
 export function handleCompositionStart(event: Event, textarea: TextArea, editor: IDomEditor) {
     if (!hasEditableTarget(editor, event.target)) return
 
-    // COMPAT: ctrl + A 全选，然后立刻使用中文输入法，会有 bug （官网 examples 也有这个问题）
-    Editor.insertText(editor, '')
+    const { selection } = editor
+    if (selection && !Range.isCollapsed(selection)) {
+        // COMPAT: ctrl + A 全选，然后立刻使用中文输入法，会有 bug （官网 examples 也有这个问题）
+        Editor.insertText(editor, '')
+    }
 
     textarea.isComposing = true
 }
