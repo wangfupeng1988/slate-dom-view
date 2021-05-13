@@ -11,6 +11,10 @@ import { hasEditableTarget } from '../helpers'
 
 export function handleCompositionStart(event: Event, textarea: TextArea, editor: IDomEditor) {
     if (!hasEditableTarget(editor, event.target)) return
+
+    // COMPAT: ctrl + A 全选，然后立刻使用中文输入法，会有 bug （官网 examples 也有这个问题）
+    Editor.insertText(editor, '')
+
     textarea.isComposing = true
 }
 
@@ -31,5 +35,7 @@ export function handleCompositionEnd(event: Event, textarea: TextArea, editor: I
     // }
 
     // 这里暂且忽略浏览器判断，直接插入文本
-    if (data) Editor.insertText(editor, data)
+    if (data) {
+        Editor.insertText(editor, data)
+    }
 }

@@ -14,8 +14,6 @@
             border:  1px solid #ccc;
             width: 600px;
             height: 300px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch; 
         }
         #editor-view-container [data-slate-editor] {
             outline: 0;
@@ -23,6 +21,8 @@
             word-wrap: break-word;
             padding: 0 10px;
             height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         #editor-view-container [data-slate-editor] img {
             margin: 0 3px;
@@ -117,12 +117,12 @@
                     { text: ' ~' }
                 ]
             },
-            {
-                type: 'video',
-                url: 'http://106.55.153.217:8881/server/upload-files/movie-1-zq8.mp4',
-                // url: 'http://106.55.153.217:8881/server/upload-files/movie-2-ti2.mp4',
-                children: [{ text: '' }] // void 节点，需要有一个空 text
-            },
+            // {
+            //     type: 'video',
+            //     url: 'http://106.55.153.217:8881/server/upload-files/movie-1-zq8.mp4',
+            //     // url: 'http://106.55.153.217:8881/server/upload-files/movie-2-ti2.mp4',
+            //     children: [{ text: '' }] // void 节点，需要有一个空 text
+            // },
             // {
             //     type: 'pre',
             //     children: [
